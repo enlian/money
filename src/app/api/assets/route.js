@@ -1,11 +1,12 @@
 import { query } from './../../lib/db';
+import yahooFinance from 'yahoo-finance2'; // 使用 yahoo-finance2 库
 
 // 通用的时间戳格式化方法
 const formatTimestamps = (dataArray) => {
   return dataArray.map((item) => {
     return {
-      date: new Date(item.t).toISOString().split('T')[0],
-      amount:item.c
+      date: item.date, // 使用返回的数据中的日期
+      amount: item.close // 收盘价作为金额
     };
   });
 };
@@ -19,27 +20,44 @@ export async function GET() {
       ORDER BY date ASC
     `);
 
-    const apiKey = process.env.POLYGON_API_KEY;
     const earliestDate = result.rows[0]?.date; // 使用资产数据的最早日期
     const latestDate = result.rows[result.rows.length - 1]?.date || new Date().toISOString().split('T')[0];
 
     // 获取标普500数据
-    const sp500Response = await fetch(
-      `https://api.polygon.io/v2/aggs/ticker/SPY/range/1/day/${earliestDate}/${latestDate}?apiKey=${apiKey}`
-    );
-    const sp500Data = await sp500Response.json();
+    const sp500Data = await yahooFinance.chart('SPY', {
+      period1: earliestDate,
+      period2: latestDate,
+      interval: '1d', // 每日数据
+    });
 
     // 获取纳斯达克数据
-    const nasdaqResponse = await fetch(
-      `https://api.polygon.io/v2/aggs/ticker/QQQ/range/1/day/${earliestDate}/${latestDate}?apiKey=${apiKey}`
-    );
-    const nasdaqData = await nasdaqResponse.json();
+    const nasdaqData = await yahooFinance.chart('QQQ', {
+      period1: earliestDate,
+      period2: latestDate,
+      interval: '1d', // 每日数据
+    });
+
+    // 获取比特币数据
+    const btcData = await yahooFinance.chart('BTC-USD', {
+      period1: earliestDate,
+      period2: latestDate,
+      interval: '1d', // 每日数据
+    });
+
+    // 获取以太坊数据
+    const ethData = await yahooFinance.chart('ETH-USD', {
+      period1: earliestDate,
+      period2: latestDate,
+      interval: '1d', // 每日数据
+    });
 
     // 组合数据库数据与外部API数据
     const responseData = {
       assets: result.rows,
-      sp500: formatTimestamps(sp500Data.results),
-      nasdaq: formatTimestamps(nasdaqData.results),
+      sp500: formatTimestamps(sp500Data.quotes),
+      nasdaq: formatTimestamps(nasdaqData.quotes),
+      bitcoin: formatTimestamps(btcData.quotes),
+      ethereum: formatTimestamps(ethData.quotes),
     };
 
     return new Response(JSON.stringify(responseData), { status: 200 });
