@@ -4,24 +4,27 @@ import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import moment from "moment";
 import "chart.js/auto";
-import { Chart } from "chart.js"; // 引入Chart.js的核心
+import { Chart, TooltipItem } from "chart.js"; // 引入Chart.js的核心
 import "./assets-page.css";
+
+interface Dataset {
+  label: string;
+  data: (number | null)[];
+  [key: string]: string | number | (number | null)[] | boolean | undefined; // 更宽泛但明确的类型
+}
 
 interface ChartData {
   labels: string[];
-  datasets: {
-    label: string;
-    data: (number | null)[];
-    borderColor: string;
-    backgroundColor: string;
-    fill: boolean;
-    spanGaps: boolean;
-  }[];
+  datasets: Dataset[];
+}
+
+interface AssetData {
+  [key: string]: number; // 定义对象的 key 是 string，值是 number
 }
 
 // 创建一个通用的获取金额数组的方法
-const getAmounts = (data: any[], key: string) => {
-  return data.map((item: { [key: string]: number }) => item[key]);
+const getAmounts = (data: AssetData[], key: string) => {
+  return data.map((item) => item[key]);
 };
 
 // 标准化数据以百分比增长表示，第一个数据点设置为0
@@ -72,31 +75,32 @@ const AssetsPage = () => {
             {
               label: "自有资产",
               data: normalizeData(amounts),
-              borderColor: "rgba(75, 192, 192, 1)",
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(255, 0, 0, 1)", // 设置为显眼的红色
+              backgroundColor: "rgba(255, 0, 0, 0.2)",
               fill: false,
               spanGaps: false,
             },
             {
               label: "标普500",
               data: normalizeData(sp500Amounts),
-              borderColor: "rgba(54, 162, 235, 1)",
+              borderColor: "rgba(54, 162, 235, 0.8)",
               backgroundColor: "rgba(54, 162, 235, 0.2)",
               fill: false,
               spanGaps: false,
+              hidden: true,
             },
             {
               label: "纳斯达克",
               data: normalizeData(nasdaqAmounts),
-              borderColor: "rgba(255, 99, 132, 1)",
-              backgroundColor: "rgba(255, 99, 132, 0.2)",
+              borderColor: "rgba(144,156,255,0.8)", 
+              backgroundColor: "rgba(144,156,255,0.2)",
               fill: false,
               spanGaps: false,
             },
             {
               label: "BTC",
               data: normalizeData(btcAmounts),
-              borderColor: "rgba(255, 206, 86, 1)",
+              borderColor: "rgba(255, 206, 86, 0.8)",
               backgroundColor: "rgba(255, 206, 86, 0.2)",
               fill: false,
               spanGaps: false,
@@ -104,10 +108,11 @@ const AssetsPage = () => {
             {
               label: "ETH",
               data: normalizeData(ethAmounts),
-              borderColor: "rgba(153, 102, 255, 1)",
-              backgroundColor: "rgba(153, 102, 255, 0.2)",
+              borderColor: "rgba(95, 255, 113, 0.8)",
+              backgroundColor: "rgba(95, 255, 113, 0.2)",
               fill: false,
               spanGaps: false,
+              hidden: true,
             },
           ],
         });
@@ -119,8 +124,8 @@ const AssetsPage = () => {
             {
               label: "资产金额 (元)",
               data: amounts,
-              borderColor: "rgba(75, 192, 192, 1)",
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(255, 0, 0, 0.4)", // 设置为显眼的红色
+              backgroundColor: "rgba(255, 0, 0, 0.2)",
               fill: true,
               spanGaps: false,
             },
@@ -134,7 +139,7 @@ const AssetsPage = () => {
 
         setLatest(latestAmount);
         setHighPoint(maxAmount);
-        setDrawdown(currentDrawdown.toFixed(2)); // 保留两位小数
+        setDrawdown(parseFloat(currentDrawdown.toFixed(2))); // 保留两位小数
       } catch (error) {
         setErrorMessage("无法获取数据，请稍后重试: " + error);
       }
@@ -184,8 +189,11 @@ const AssetsPage = () => {
       y: {
         max: 100,
         ticks: {
-          callback: function (value: number) {
-            return value + "%"; // 在 y 轴刻度后面加上 %
+          callback: function (value: string | number) {
+            if (typeof value === "number") {
+              return value + "%"; // Append "%" for numbers
+            }
+            return value; // For string or other types, return the value as it is
           },
         },
       },
@@ -203,8 +211,8 @@ const AssetsPage = () => {
         mode: "index" as const,
         intersect: false,
         callbacks: {
-          label: function (tooltipItem: any) {
-            const value = tooltipItem.raw;
+          label: function (tooltipItem: TooltipItem<"line">) {
+            const value = tooltipItem.raw as number; // 这里假设 raw 是数字类型
             return (
               tooltipItem.dataset.label +
               ": " +
@@ -243,8 +251,11 @@ const AssetsPage = () => {
       },
       y: {
         ticks: {
-          callback: function (value: number) {
-            return value / 10000 + "万"; // 将 y 轴数值除以 10000，并加上“万”单位
+          callback: function (value: string | number) {
+            if (typeof value === "number") {
+              return value / 10000 + "万"; // 将 y 轴数值除以 10000，并加上“万”单位
+            }
+            return value; // 如果 value 不是数字，直接返回
           },
         },
       },
@@ -278,10 +289,11 @@ const AssetsPage = () => {
       <hr />
       {/* 显示最新、高点和当前回撤 */}
       <div className="info-section">
-        <span className="title">资产走势图</span>
+        <span className="title1">资产走势图</span>
         <div className="right-info">
           <div>
-            最新：{roiChartData?.labels[roiChartData.labels.length - 1]}{"  "}
+            最新：{roiChartData?.labels[roiChartData.labels.length - 1]}
+            {"  "}
             {latest ? (latest / 10000).toFixed(2) + "万" : "N/A"}
           </div>
           <div>
