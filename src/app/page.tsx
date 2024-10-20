@@ -19,6 +19,19 @@ interface ChartData {
   }[];
 }
 
+// 创建一个通用的获取金额数组的方法
+const getAmounts = (data: any[], key: string) => {
+  return data.map((item: { [key: string]: number }) => item[key]);
+};
+
+// 标准化数据以百分比增长表示，第一个数据点设置为0
+const normalizeData = (data: number[]) => {
+  const baseValue = data[0];
+  return data.map((value, index) =>
+    index === 0 ? 0 : Number(((value / baseValue - 1) * 100).toFixed(2))
+  );
+};
+
 const AssetsPage = () => {
   const [roiChartData, setROIChartData] = useState<ChartData | null>(null);
   const [assetsChartData, setAssetsChartData] = useState<ChartData | null>(
@@ -26,9 +39,13 @@ const AssetsPage = () => {
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [latest, setLatest] = useState<number | null>(null); // 最新金额
+  const [highPoint, setHighPoint] = useState<number | null>(null); // 高点金额
+  const [drawdown, setDrawdown] = useState<number | null>(null); // 当前回撤百分比
+
   useEffect(() => {
     // 动态导入 zoomPlugin 只在客户端加载
-    import('chartjs-plugin-zoom').then((zoomPlugin) => {
+    import("chartjs-plugin-zoom").then((zoomPlugin) => {
       Chart.register(zoomPlugin.default);
     });
     async function fetchData() {
@@ -41,30 +58,19 @@ const AssetsPage = () => {
           moment(item.date).format("YY-MM-DD")
         );
 
-        const amounts = data.assets.map(
-          (item: { amount: number }) => item.amount
-        );
-
-        // 获取标普500、纳斯达克、比特币和以太坊的数据
-        const sp500Amounts = data.sp500.map(
-          (item: { amount: number }) => item.amount
-        );
-        const nasdaqAmounts = data.nasdaq.map(
-          (item: { amount: number }) => item.amount
-        );
-        const btcAmounts = data.bitcoin.map(
-          (item: { amount: number }) => item.amount
-        );
-        const ethAmounts = data.ethereum.map(
-          (item: { amount: number }) => item.amount
-        );
+        // 使用通用方法获取不同的数据集
+        const amounts = getAmounts(data.assets, "amount");
+        const sp500Amounts = getAmounts(data.sp500, "amount");
+        const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
+        const btcAmounts = getAmounts(data.bitcoin, "amount");
+        const ethAmounts = getAmounts(data.ethereum, "amount");
 
         // 设置ROI图表数据
         setROIChartData({
           labels,
           datasets: [
             {
-              label: "资产投资回报率 (%)",
+              label: "自有资产",
               data: normalizeData(amounts),
               borderColor: "rgba(75, 192, 192, 1)",
               backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -72,7 +78,7 @@ const AssetsPage = () => {
               spanGaps: false,
             },
             {
-              label: "标普500投资回报率 (%)",
+              label: "标普500",
               data: normalizeData(sp500Amounts),
               borderColor: "rgba(54, 162, 235, 1)",
               backgroundColor: "rgba(54, 162, 235, 0.2)",
@@ -80,7 +86,7 @@ const AssetsPage = () => {
               spanGaps: false,
             },
             {
-              label: "纳斯达克指数投资回报率 (%)",
+              label: "纳斯达克",
               data: normalizeData(nasdaqAmounts),
               borderColor: "rgba(255, 99, 132, 1)",
               backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -88,7 +94,7 @@ const AssetsPage = () => {
               spanGaps: false,
             },
             {
-              label: "BTC投资回报率 (%)",
+              label: "BTC",
               data: normalizeData(btcAmounts),
               borderColor: "rgba(255, 206, 86, 1)",
               backgroundColor: "rgba(255, 206, 86, 0.2)",
@@ -96,7 +102,7 @@ const AssetsPage = () => {
               spanGaps: false,
             },
             {
-              label: "ETH投资回报率 (%)",
+              label: "ETH",
               data: normalizeData(ethAmounts),
               borderColor: "rgba(153, 102, 255, 1)",
               backgroundColor: "rgba(153, 102, 255, 0.2)",
@@ -120,6 +126,15 @@ const AssetsPage = () => {
             },
           ],
         });
+
+        // 计算并设置最新、高点和当前回撤
+        const latestAmount = amounts[amounts.length - 1]; // 最新的金额
+        const maxAmount = Math.max(...amounts); // 高点金额
+        const currentDrawdown = ((maxAmount - latestAmount) / maxAmount) * 100; // 当前回撤
+
+        setLatest(latestAmount);
+        setHighPoint(maxAmount);
+        setDrawdown(currentDrawdown.toFixed(2)); // 保留两位小数
       } catch (error) {
         setErrorMessage("无法获取数据，请稍后重试: " + error);
       }
@@ -127,14 +142,6 @@ const AssetsPage = () => {
 
     fetchData();
   }, []);
-
-  // 标准化数据以百分比增长表示，第一个数据点设置为0
-  const normalizeData = (data: number[]) => {
-    const baseValue = data[0];
-    return data.map((value, index) =>
-      index === 0 ? 0 : Number(((value / baseValue - 1) * 100).toFixed(2))
-    );
-  };
 
   // 配置上图（投资回报率图表）的缩放选项
   const roiChartOptions = {
@@ -150,7 +157,7 @@ const AssetsPage = () => {
       zoom: {
         pan: {
           enabled: true,
-          mode: "x" as const, // 这里确保 mode 是 'x' 或 'y' 或 'xy'
+          mode: "x" as const,
         },
         zoom: {
           wheel: {
@@ -159,10 +166,10 @@ const AssetsPage = () => {
           pinch: {
             enabled: true,
           },
-          mode: "x" as const, // 这里确保 mode 是 'x' 或 'y' 或 'xy'
+          mode: "x" as const,
         },
         limits: {
-          x: { min: "original" as const, max: "original" as const }, // 使用 'original' 作为限制
+          x: { min: "original" as const, max: "original" as const },
         },
       },
     },
@@ -175,10 +182,11 @@ const AssetsPage = () => {
         },
       },
       y: {
-        // min: -50, // y轴最小值为-50
-        max: 100, // 最大值为 300
+        max: 100,
         ticks: {
-          // stepSize: 30, // 设置步长
+          callback: function (value: number) {
+            return value + "%"; // 在 y 轴刻度后面加上 %
+          },
         },
       },
     },
@@ -194,11 +202,22 @@ const AssetsPage = () => {
       tooltip: {
         mode: "index" as const,
         intersect: false,
+        callbacks: {
+          label: function (tooltipItem: any) {
+            const value = tooltipItem.raw;
+            return (
+              tooltipItem.dataset.label +
+              ": " +
+              (value / 10000).toFixed(2) +
+              "万"
+            ); // 转换为“万”单位
+          },
+        },
       },
       zoom: {
         pan: {
           enabled: true,
-          mode: "x" as const, // 这里确保 mode 是 'x' 或 'y' 或 'xy'
+          mode: "x" as const,
         },
         zoom: {
           wheel: {
@@ -207,10 +226,10 @@ const AssetsPage = () => {
           pinch: {
             enabled: true,
           },
-          mode: "x" as const, // 这里确保 mode 是 'x' 或 'y' 或 'xy'
+          mode: "x" as const,
         },
         limits: {
-          x: { min: "original" as const, max: "original" as const }, // 使用 'original' 作为限制
+          x: { min: "original" as const, max: "original" as const },
         },
       },
     },
@@ -220,6 +239,13 @@ const AssetsPage = () => {
       x: {
         ticks: {
           maxTicksLimit: 30,
+        },
+      },
+      y: {
+        ticks: {
+          callback: function (value: number) {
+            return value / 10000 + "万"; // 将 y 轴数值除以 10000，并加上“万”单位
+          },
         },
       },
     },
@@ -243,15 +269,27 @@ const AssetsPage = () => {
     );
   }
 
-
   return (
     <div>
-      <span>投资回报率对比图（自有资产、标普500、纳斯达克、BTC、ETH）</span>
+      <span className="title">投资回报率对比</span>
       <div style={{ height: 400 }}>
         <Line data={roiChartData} options={roiChartOptions} />
       </div>
       <hr />
-      <span>资产走势图</span>
+      {/* 显示最新、高点和当前回撤 */}
+      <div className="info-section">
+        <span className="title">资产走势图</span>
+        <div className="right-info">
+          <div>
+            最新：{roiChartData?.labels[roiChartData.labels.length - 1]}{"  "}
+            {latest ? (latest / 10000).toFixed(2) + "万" : "N/A"}
+          </div>
+          <div>
+            高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : "N/A"}{" "}
+            当前回撤：{drawdown ? drawdown + "%" : "N/A"}
+          </div>
+        </div>
+      </div>
       <div style={{ height: 400 }}>
         <Line data={assetsChartData} options={assetsChartOptions} />
       </div>

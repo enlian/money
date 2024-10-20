@@ -1,58 +1,89 @@
-span{
+hr {
+  margin: 20px 0 20px 0;
+  opacity: 0.2;
+}
+
+.title{
   width: 100%;
   display: block;
   text-align: center;
 }
 
-hr{
-  margin: 30px 0 20px 0;
-  opacity: 0.2;
+.info-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* 保证中间元素可以精确定位 */
+  height: 20px;
+  span {
+    position: absolute;
+    left: 50%; /* 将"资产走势图"的左边位置设置在父容器的50%处 */
+    transform: translateX(-50%); /* 将"资产走势图"从左边向左平移50%来实现居中 */
+    color: #333;
+  }
+  .right-info {
+    margin-left: auto; /* 确保右侧信息对齐到右边 */
+    position: absolute;
+    right: 10px;
+    top:5px;
+    color: #333;
+  }
+  @media (max-width: 600px) {
+    span{
+      left: 10px; /* 将"资产走势图"的左边位置设置在父容器的50%处 */
+      transform: translateX(0%); /* 将"资产走势图"从左边向左平移50%来实现居中 */
+      font-size: 1em; /* 调整为更小的字体大小 */
+    }
+    .right-info {
+      top:-5px;
+      font-size: 0.5em; /* 调整为更小的字体大小 */
+    }
+  }
 }
 
 .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 400px;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  text-align: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: rgba(0, 0, 0, 0.8);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-  }
-  
-  .retry-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .retry-button:hover {
-    background-color: #0056b3;
-  }
-  
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+
+.retry-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.retry-button:hover {
+  background-color: #0056b3;
+}
