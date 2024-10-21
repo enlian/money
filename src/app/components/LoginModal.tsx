@@ -33,7 +33,7 @@ const LoginModal = () => {
         setToken(data.token); // 更新全局 token
         setIsOpen(false); // 登录成功后关闭弹窗
         verifyToken(); // 验证 token
-        window.location.href = '/'; // 使用 window.location.href 进行页面刷新
+        // window.location.href = '/'; // 使用 window.location.href 进行页面刷新
     } else {
         setError(data.message);
       }
@@ -44,7 +44,7 @@ const LoginModal = () => {
 
   const handleLogout = () => {
     logout(); // 调用 logout 方法
-    window.location.href = '/'; // 使用 window.location.href 进行页面刷新
+    // window.location.href = '/'; // 使用 window.location.href 进行页面刷新
 };
 
   return (

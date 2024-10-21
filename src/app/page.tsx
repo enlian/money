@@ -8,8 +8,7 @@ import { Chart, TooltipItem } from "chart.js"; // 引入Chart.js的核心
 import "./assets-page.css";
 import LoginModal from "./components/LoginModal";
 import AddAmountModal from "./components/AddAmountModal";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import zoomPlugin from "chartjs-plugin-zoom"; // 确保引入缩放插件
+import {useAuth } from "./context/AuthContext";
 
 interface Dataset {
   label: string;
@@ -51,112 +50,109 @@ const AssetsPage = () => {
   const [drawdown, setDrawdown] = useState<number | null>(null); // 当前回撤百分比
   const { isAuthenticated, isAuthenticating } = useAuth();
 
-  // 动态导入 zoomPlugin 只在客户端加载
-  import("chartjs-plugin-zoom").then((zoomPlugin) => {
-    Chart.register(zoomPlugin.default);
-  });
+  const fetchData = async () => {
+    try {
+      const apiUrl = isAuthenticated ? "/api/assets" : "/api/visitor-assets";
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      // 获取资产数据的日期和金额
+      const labels = data.assets.map((item: { date: string }) =>
+        moment(item.date).format("YY-MM-DD")
+      );
+
+      // 使用通用方法获取不同的数据集
+      const amounts = getAmounts(data.assets, "amount");
+      const sp500Amounts = getAmounts(data.sp500, "amount");
+      const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
+      const btcAmounts = getAmounts(data.bitcoin, "amount");
+      const ethAmounts = getAmounts(data.ethereum, "amount");
+
+      // 设置ROI图表数据
+      setROIChartData({
+        labels,
+        datasets: [
+          {
+            label: "自有资产",
+            data: normalizeData(amounts),
+            borderColor: "rgba(255, 0, 0, 1)", // 设置为显眼的红色
+            backgroundColor: "rgba(255, 0, 0, 0.2)",
+            fill: false,
+            spanGaps: false,
+          },
+          {
+            label: "标普500",
+            data: normalizeData(sp500Amounts),
+            borderColor: "rgba(54, 162, 235, 0.8)",
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            fill: false,
+            spanGaps: false,
+            hidden: true,
+          },
+          {
+            label: "纳斯达克",
+            data: normalizeData(nasdaqAmounts),
+            borderColor: "rgba(144,156,255,0.8)",
+            backgroundColor: "rgba(144,156,255,0.2)",
+            fill: false,
+            spanGaps: false,
+          },
+          {
+            label: "BTC",
+            data: normalizeData(btcAmounts),
+            borderColor: "rgba(255, 206, 86, 0.8)",
+            backgroundColor: "rgba(255, 206, 86, 0.2)",
+            fill: false,
+            spanGaps: false,
+          },
+          {
+            label: "ETH",
+            data: normalizeData(ethAmounts),
+            borderColor: "rgba(95, 255, 113, 0.8)",
+            backgroundColor: "rgba(95, 255, 113, 0.2)",
+            fill: false,
+            spanGaps: false,
+            hidden: true,
+          },
+        ],
+      });
+
+      // 设置资产金额图表数据
+      setAssetsChartData({
+        labels,
+        datasets: [
+          {
+            label: "资产金额 (元)",
+            data: amounts,
+            borderColor: "rgba(255, 0, 0, 0.4)", // 设置为显眼的红色
+            backgroundColor: "rgba(255, 0, 0, 0.2)",
+            fill: true,
+            spanGaps: false,
+          },
+        ],
+      });
+
+      // 计算并设置最新、高点和当前回撤
+      const latestAmount = amounts[amounts.length - 1]; // 最新的金额
+      const maxAmount = Math.max(...amounts); // 高点金额
+      const currentDrawdown = ((maxAmount - latestAmount) / maxAmount) * 100; // 当前回撤
+
+      setLatest(latestAmount);
+      setHighPoint(maxAmount);
+      setDrawdown(parseFloat(currentDrawdown.toFixed(2))); // 保留两位小数
+    } catch (error) {
+      setErrorMessage("无法获取数据，请稍后重试: " + error);
+    }
+  };
 
   useEffect(() => {
+    // 动态导入 zoomPlugin 只在客户端加载
+    import("chartjs-plugin-zoom").then((zoomPlugin) => {
+      Chart.register(zoomPlugin.default);
+    });
+
     if (!isAuthenticating) {
-      const fetchData = async () => {
-        try {
-          const apiUrl = isAuthenticated
-            ? "/api/assets"
-            : "/api/visitor-assets";
-
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-
-          // 获取资产数据的日期和金额
-          const labels = data.assets.map((item: { date: string }) =>
-            moment(item.date).format("YY-MM-DD")
-          );
-
-          // 使用通用方法获取不同的数据集
-          const amounts = getAmounts(data.assets, "amount");
-          const sp500Amounts = getAmounts(data.sp500, "amount");
-          const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
-          const btcAmounts = getAmounts(data.bitcoin, "amount");
-          const ethAmounts = getAmounts(data.ethereum, "amount");
-
-          // 设置ROI图表数据
-          setROIChartData({
-            labels,
-            datasets: [
-              {
-                label: "自有资产",
-                data: normalizeData(amounts),
-                borderColor: "rgba(255, 0, 0, 1)", // 设置为显眼的红色
-                backgroundColor: "rgba(255, 0, 0, 0.2)",
-                fill: false,
-                spanGaps: false,
-              },
-              {
-                label: "标普500",
-                data: normalizeData(sp500Amounts),
-                borderColor: "rgba(54, 162, 235, 0.8)",
-                backgroundColor: "rgba(54, 162, 235, 0.2)",
-                fill: false,
-                spanGaps: false,
-                hidden: true,
-              },
-              {
-                label: "纳斯达克",
-                data: normalizeData(nasdaqAmounts),
-                borderColor: "rgba(144,156,255,0.8)",
-                backgroundColor: "rgba(144,156,255,0.2)",
-                fill: false,
-                spanGaps: false,
-              },
-              {
-                label: "BTC",
-                data: normalizeData(btcAmounts),
-                borderColor: "rgba(255, 206, 86, 0.8)",
-                backgroundColor: "rgba(255, 206, 86, 0.2)",
-                fill: false,
-                spanGaps: false,
-              },
-              {
-                label: "ETH",
-                data: normalizeData(ethAmounts),
-                borderColor: "rgba(95, 255, 113, 0.8)",
-                backgroundColor: "rgba(95, 255, 113, 0.2)",
-                fill: false,
-                spanGaps: false,
-                hidden: true,
-              },
-            ],
-          });
-
-          // 设置资产金额图表数据
-          setAssetsChartData({
-            labels,
-            datasets: [
-              {
-                label: "资产金额 (元)",
-                data: amounts,
-                borderColor: "rgba(255, 0, 0, 0.4)", // 设置为显眼的红色
-                backgroundColor: "rgba(255, 0, 0, 0.2)",
-                fill: true,
-                spanGaps: false,
-              },
-            ],
-          });
-
-          // 计算并设置最新、高点和当前回撤
-          const latestAmount = amounts[amounts.length - 1]; // 最新的金额
-          const maxAmount = Math.max(...amounts); // 高点金额
-          const currentDrawdown =
-            ((maxAmount - latestAmount) / maxAmount) * 100; // 当前回撤
-
-          setLatest(latestAmount);
-          setHighPoint(maxAmount);
-          setDrawdown(parseFloat(currentDrawdown.toFixed(2))); // 保留两位小数
-        } catch (error) {
-          setErrorMessage("无法获取数据，请稍后重试: " + error);
-        }
-      };
-
       fetchData(); // 仅在 `isAuthenticating` 为 false 时发起请求
     }
   }, [isAuthenticated, isAuthenticating]);
@@ -294,7 +290,7 @@ const AssetsPage = () => {
   }
 
   return (
-    <AuthProvider>
+    <div>
       <span className="title">投资回报率对比</span>
       <div style={{ height: 400 }}>
         <Line data={roiChartData} options={roiChartOptions} />
@@ -323,7 +319,7 @@ const AssetsPage = () => {
         <AddAmountModal />
         <LoginModal />
       </div>
-    </AuthProvider>
+    </div>
   );
 };
 
