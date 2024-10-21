@@ -1,7 +1,7 @@
 # Personal Net Worth Tracker
 
 This project is a web application designed to help users track their personal net worth over time. Users can record their assets, and the application will display the data in a chart to visualize the growth or decline of their assets.
-<br/>
+<br/><br/>
 Demo: <a href="nextjs-chartjs-postgres-assets.vercel.app">nextjs-chartjs-postgres-assets.vercel.app</a>
 
 ## Features
@@ -33,7 +33,6 @@ The project uses the following technologies:
 
 <img src="./screenshot/1.png" width="400"/><br/>
 <img src="./screenshot/2.png" width="400"/><br/>
-<img src="./screenshot/3.png" width="400"/><br/>
 <img src="./screenshot/4.png" width="400"/><br/>
 <img src="./screenshot/5.png" width="400"/><br/>
 <img src="./screenshot/6.png" width="400"/><br/>
