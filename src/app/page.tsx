@@ -6,6 +6,10 @@ import moment from "moment";
 import "chart.js/auto";
 import { Chart, TooltipItem } from "chart.js"; // 引入Chart.js的核心
 import "./assets-page.css";
+import LoginModal from "./components/LoginModal";
+import AddAmountModal from "./components/AddAmountModal";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import zoomPlugin from "chartjs-plugin-zoom"; // 确保引入缩放插件
 
 interface Dataset {
   label: string;
@@ -45,108 +49,117 @@ const AssetsPage = () => {
   const [latest, setLatest] = useState<number | null>(null); // 最新金额
   const [highPoint, setHighPoint] = useState<number | null>(null); // 高点金额
   const [drawdown, setDrawdown] = useState<number | null>(null); // 当前回撤百分比
+  const { isAuthenticated, isAuthenticating } = useAuth();
+
+  // 动态导入 zoomPlugin 只在客户端加载
+  import("chartjs-plugin-zoom").then((zoomPlugin) => {
+    Chart.register(zoomPlugin.default);
+  });
 
   useEffect(() => {
-    // 动态导入 zoomPlugin 只在客户端加载
-    import("chartjs-plugin-zoom").then((zoomPlugin) => {
-      Chart.register(zoomPlugin.default);
-    });
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/assets");
-        const data = await response.json();
+    if (!isAuthenticating) {
+      const fetchData = async () => {
+        try {
+          const apiUrl = isAuthenticated
+            ? "/api/assets"
+            : "/api/visitor-assets";
 
-        // 获取资产数据的日期和金额
-        const labels = data.assets.map((item: { date: string }) =>
-          moment(item.date).format("YY-MM-DD")
-        );
+          const response = await fetch(apiUrl);
+          const data = await response.json();
 
-        // 使用通用方法获取不同的数据集
-        const amounts = getAmounts(data.assets, "amount");
-        const sp500Amounts = getAmounts(data.sp500, "amount");
-        const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
-        const btcAmounts = getAmounts(data.bitcoin, "amount");
-        const ethAmounts = getAmounts(data.ethereum, "amount");
+          // 获取资产数据的日期和金额
+          const labels = data.assets.map((item: { date: string }) =>
+            moment(item.date).format("YY-MM-DD")
+          );
 
-        // 设置ROI图表数据
-        setROIChartData({
-          labels,
-          datasets: [
-            {
-              label: "自有资产",
-              data: normalizeData(amounts),
-              borderColor: "rgba(255, 0, 0, 1)", // 设置为显眼的红色
-              backgroundColor: "rgba(255, 0, 0, 0.2)",
-              fill: false,
-              spanGaps: false,
-            },
-            {
-              label: "标普500",
-              data: normalizeData(sp500Amounts),
-              borderColor: "rgba(54, 162, 235, 0.8)",
-              backgroundColor: "rgba(54, 162, 235, 0.2)",
-              fill: false,
-              spanGaps: false,
-              hidden: true,
-            },
-            {
-              label: "纳斯达克",
-              data: normalizeData(nasdaqAmounts),
-              borderColor: "rgba(144,156,255,0.8)", 
-              backgroundColor: "rgba(144,156,255,0.2)",
-              fill: false,
-              spanGaps: false,
-            },
-            {
-              label: "BTC",
-              data: normalizeData(btcAmounts),
-              borderColor: "rgba(255, 206, 86, 0.8)",
-              backgroundColor: "rgba(255, 206, 86, 0.2)",
-              fill: false,
-              spanGaps: false,
-            },
-            {
-              label: "ETH",
-              data: normalizeData(ethAmounts),
-              borderColor: "rgba(95, 255, 113, 0.8)",
-              backgroundColor: "rgba(95, 255, 113, 0.2)",
-              fill: false,
-              spanGaps: false,
-              hidden: true,
-            },
-          ],
-        });
+          // 使用通用方法获取不同的数据集
+          const amounts = getAmounts(data.assets, "amount");
+          const sp500Amounts = getAmounts(data.sp500, "amount");
+          const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
+          const btcAmounts = getAmounts(data.bitcoin, "amount");
+          const ethAmounts = getAmounts(data.ethereum, "amount");
 
-        // 设置资产金额图表数据
-        setAssetsChartData({
-          labels,
-          datasets: [
-            {
-              label: "资产金额 (元)",
-              data: amounts,
-              borderColor: "rgba(255, 0, 0, 0.4)", // 设置为显眼的红色
-              backgroundColor: "rgba(255, 0, 0, 0.2)",
-              fill: true,
-              spanGaps: false,
-            },
-          ],
-        });
+          // 设置ROI图表数据
+          setROIChartData({
+            labels,
+            datasets: [
+              {
+                label: "自有资产",
+                data: normalizeData(amounts),
+                borderColor: "rgba(255, 0, 0, 1)", // 设置为显眼的红色
+                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                fill: false,
+                spanGaps: false,
+              },
+              {
+                label: "标普500",
+                data: normalizeData(sp500Amounts),
+                borderColor: "rgba(54, 162, 235, 0.8)",
+                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                fill: false,
+                spanGaps: false,
+                hidden: true,
+              },
+              {
+                label: "纳斯达克",
+                data: normalizeData(nasdaqAmounts),
+                borderColor: "rgba(144,156,255,0.8)",
+                backgroundColor: "rgba(144,156,255,0.2)",
+                fill: false,
+                spanGaps: false,
+              },
+              {
+                label: "BTC",
+                data: normalizeData(btcAmounts),
+                borderColor: "rgba(255, 206, 86, 0.8)",
+                backgroundColor: "rgba(255, 206, 86, 0.2)",
+                fill: false,
+                spanGaps: false,
+              },
+              {
+                label: "ETH",
+                data: normalizeData(ethAmounts),
+                borderColor: "rgba(95, 255, 113, 0.8)",
+                backgroundColor: "rgba(95, 255, 113, 0.2)",
+                fill: false,
+                spanGaps: false,
+                hidden: true,
+              },
+            ],
+          });
 
-        // 计算并设置最新、高点和当前回撤
-        const latestAmount = amounts[amounts.length - 1]; // 最新的金额
-        const maxAmount = Math.max(...amounts); // 高点金额
-        const currentDrawdown = ((maxAmount - latestAmount) / maxAmount) * 100; // 当前回撤
+          // 设置资产金额图表数据
+          setAssetsChartData({
+            labels,
+            datasets: [
+              {
+                label: "资产金额 (元)",
+                data: amounts,
+                borderColor: "rgba(255, 0, 0, 0.4)", // 设置为显眼的红色
+                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                fill: true,
+                spanGaps: false,
+              },
+            ],
+          });
 
-        setLatest(latestAmount);
-        setHighPoint(maxAmount);
-        setDrawdown(parseFloat(currentDrawdown.toFixed(2))); // 保留两位小数
-      } catch (error) {
-        setErrorMessage("无法获取数据，请稍后重试: " + error);
-      }
+          // 计算并设置最新、高点和当前回撤
+          const latestAmount = amounts[amounts.length - 1]; // 最新的金额
+          const maxAmount = Math.max(...amounts); // 高点金额
+          const currentDrawdown =
+            ((maxAmount - latestAmount) / maxAmount) * 100; // 当前回撤
+
+          setLatest(latestAmount);
+          setHighPoint(maxAmount);
+          setDrawdown(parseFloat(currentDrawdown.toFixed(2))); // 保留两位小数
+        } catch (error) {
+          setErrorMessage("无法获取数据，请稍后重试: " + error);
+        }
+      };
+
+      fetchData(); // 仅在 `isAuthenticating` 为 false 时发起请求
     }
-
-    fetchData();
-  }, []);
+  }, [isAuthenticated, isAuthenticating]);
 
   // 配置上图（投资回报率图表）的缩放选项
   const roiChartOptions = {
@@ -187,7 +200,7 @@ const AssetsPage = () => {
         },
       },
       y: {
-        max: 100,
+        // max: 100,
         ticks: {
           callback: function (value: string | number) {
             if (typeof value === "number") {
@@ -281,7 +294,7 @@ const AssetsPage = () => {
   }
 
   return (
-    <div>
+    <AuthProvider>
       <span className="title">投资回报率对比</span>
       <div style={{ height: 400 }}>
         <Line data={roiChartData} options={roiChartOptions} />
@@ -294,18 +307,23 @@ const AssetsPage = () => {
           <div>
             最新：{roiChartData?.labels[roiChartData.labels.length - 1]}
             {"  "}
-            {latest ? (latest / 10000).toFixed(2) + "万" : "N/A"}
+            {latest ? (latest / 10000).toFixed(2) + "万" : ""}
           </div>
           <div>
-            高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : "N/A"}{" "}
-            当前回撤：{drawdown ? drawdown + "%" : "N/A"}
+            高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : ""}{" "}
+            {drawdown ? "当前回撤：" + drawdown + "%" : ""}
           </div>
         </div>
       </div>
       <div style={{ height: 400 }}>
         <Line data={assetsChartData} options={assetsChartOptions} />
       </div>
-    </div>
+
+      <div className="bth-group">
+        <AddAmountModal />
+        <LoginModal />
+      </div>
+    </AuthProvider>
   );
 };
 
