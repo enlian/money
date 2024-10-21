@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Modal from './Modal';
-import { useAuth } from '../context/AuthContext'; // 使用 AuthContext
-import "./AddAmountModal.css"
+import { useState } from "react";
+import Modal from "./Modal";
+import { useAuth } from "../context/AuthContext"; // 使用 AuthContext
+import "./AddAmountModal.css";
 
 const AddAmountModal = () => {
   const [amount, setAmount] = useState<number | "">("");
@@ -29,9 +29,14 @@ const AddAmountModal = () => {
       });
 
       const result = await res.json();
-      setMessage(result.message || "金额已成功插入");
-      setAmount(""); // 清空输入框
-      setIsOpen(false); // 关闭弹窗
+
+      if (res.ok) {
+        setMessage(result.message || "金额已成功插入");
+        setAmount(""); // 清空输入框
+        setIsOpen(false); // 成功时关闭弹窗
+      } else {
+        setMessage(result.message || "插入失败，请重试");
+      }
     } catch (error) {
       setMessage("插入失败，请重试");
     }
@@ -53,10 +58,10 @@ const AddAmountModal = () => {
             onChange={(e) => setAmount(Number(e.target.value))}
             required
           />
+          <p className="error-text">{message}</p>
+
           <button type="submit">提交</button>
         </form>
-
-        {message && <p>{message}</p>}
       </Modal>
     </>
   );

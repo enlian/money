@@ -88,7 +88,7 @@ const AssetsPage = () => {
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             fill: false,
             spanGaps: false,
-            hidden: true,
+            hidden: false,
           },
           {
             label: "纳斯达克",
@@ -105,6 +105,7 @@ const AssetsPage = () => {
             backgroundColor: "rgba(255, 206, 86, 0.2)",
             fill: false,
             spanGaps: false,
+            hidden: true,
           },
           {
             label: "ETH",
