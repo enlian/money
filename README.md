@@ -30,11 +30,10 @@
 - **JWT (JSON Web Tokens)**：安全なユーザー認証とセッション管理に使用されます。
 
 ## スクリーンショット
-
+<img src="./screenshot/6.png" width="400"/><br/>
 <img src="./screenshot/1.png" width="400"/><br/>
 <img src="./screenshot/2.png" width="400"/><br/>
 <img src="./screenshot/4.png" width="400"/><br/>
-<img src="./screenshot/6.png" width="400"/><br/>
 
 ## 前提条件
 
