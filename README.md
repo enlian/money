@@ -1,68 +1,67 @@
-# Personal Net Worth Tracker
+# 個人資産追跡アプリケーション
 
-This project is a web application designed to help users track their personal net worth over time. Users can record their assets, and the application will display the data in a chart to visualize the growth or decline of their assets.
+このプロジェクトは、ユーザーが自分の個人資産を時間とともに追跡できるウェブアプリケーションです。ユーザーは資産を記録でき、アプリケーションはデータをチャートで表示し、資産の増減を視覚化します。  
 <br/><br/>
-Demo: <a href="https://nextjs-chartjs-postgres-assets.vercel.app">https://nextjs-chartjs-postgres-assets.vercel.app</a>
+デモ: <a href="https://nextjs-chartjs-postgres-assets.vercel.app">https://nextjs-chartjs-postgres-assets.vercel.app</a>
 
-## Features
+## 機能
 
-- **Add, update, and track personal net worth**: Users can log asset values at different points in time.
-- **Authentication and Authorization**: User authentication is implemented using JWT tokens. Only logged-in users can view their personal data, while visitors can see sample data.
-- **Visualize net worth data**: Data is displayed in a chart using Chart.js to show the historical performance of assets.
-- **Real-time updates**: Add or update asset records, and the chart automatically reflects the changes.
-- **Data zooming and panning**: Users can zoom and pan the chart to better view specific ranges of time.
-- **Visitor mode**: Visitors can view sample data without logging in.
-- **Add new assets using a modal**: A modal form is used to add new asset records, making the interface cleaner and more user-friendly.
-- **Token validation**: User tokens are validated with each page load to ensure session integrity.
-- **Error handling**: Friendly error messages are displayed in case of failed requests or invalid data inputs.
-- **Mobile and Desktop Responsiveness**: The interface is optimized to work seamlessly across mobile devices and desktop browsers.
+- **個人資産の追加、更新、追跡**：ユーザーは特定の時間における資産の値を記録できます。
+- **認証と認可**：JWT トークンを使用したユーザー認証が実装されています。ログインしたユーザーのみが自分のデータを確認でき、訪問者はサンプルデータを閲覧できます。
+- **資産データの可視化**：データは Chart.js を使用して表示され、資産の過去の動向を視覚的に確認できます。
+- **リアルタイム更新**：資産記録の追加や更新後、チャートが自動的に反映されます。
+- **データのズームとパン**：ユーザーはチャートをズームやパンして、特定の期間をより詳細に確認できます。
+- **訪問者モード**：訪問者はログインせずにサンプルデータを閲覧できます。
+- **モーダルによる新しい資産の追加**：モーダルフォームを使って新しい資産データを追加でき、インターフェースがシンプルで使いやすくなっています。
+- **トークンの検証**：ページ読み込み時にユーザートークンが検証され、セッションの整合性が保たれます。
+- **エラーハンドリング**：リクエストの失敗や無効なデータ入力時に、ユーザーにフレンドリーなエラーメッセージが表示されます。
+- **モバイルおよびデスクトップのレスポンシブ対応**：モバイルデバイスとデスクトップブラウザの両方に最適化されており、シームレスな体験を提供します。
 
-## Tech Stack
+## 技術スタック
 
-The project uses the following technologies:
+このプロジェクトは以下の技術を使用しています：
 
-- **Next.js 14**: A React-based framework for server-side rendering and building web applications.
-- **PostgreSQL**: A powerful, open-source object-relational database system used to store the asset data.
-- **Chart.js**: A flexible JavaScript charting library used for data visualization.
-- **React.js**: A JavaScript library for building user interfaces.
-- **Sass**: CSS preprocessor to make the styles more manageable.
-- **Node.js**: For server-side logic, particularly for API routes and database interaction.
-- **JWT (JSON Web Tokens)**: Used for secure user authentication and session management.
+- **Next.js 14**：サーバーサイドレンダリングとウェブアプリケーション開発に特化した React ベースのフレームワーク。
+- **PostgreSQL**：強力でオープンソースのリレーショナルデータベースシステム。資産データを保存します。
+- **Chart.js**：データ可視化のための柔軟な JavaScript チャートライブラリ。
+- **React.js**：ユーザーインターフェースを構築するための JavaScript ライブラリ。
+- **Sass**：スタイルをより管理しやすくするための CSS プリプロセッサ。
+- **Node.js**：サーバーサイドロジックとデータベースとのやり取りを行います。
+- **JWT (JSON Web Tokens)**：安全なユーザー認証とセッション管理に使用されます。
 
-## Screenshots
+## スクリーンショット
 
 <img src="./screenshot/1.png" width="400"/><br/>
 <img src="./screenshot/2.png" width="400"/><br/>
 <img src="./screenshot/4.png" width="400"/><br/>
-<img src="./screenshot/5.png" width="400"/><br/>
 <img src="./screenshot/6.png" width="400"/><br/>
 
-## Prerequisites
+## 前提条件
 
-Before you begin, make sure you have the following installed on your system:
+始める前に、以下のものがシステムにインストールされていることを確認してください：
 
 - Node.js (>= 16.x)
 - PostgreSQL (>= 12.x)
 - Git
 
-## Getting Started
+## 開始手順
 
-### 1. Clone the Repository
+### 1. リポジトリをクローン
 
 ```bash
 git clone https://github.com/enlian/nextjs-chartjs-postgres-assets.git
 cd nextjs-chartjs-postgres-assets
 ```
 
-### 2. Install Dependencies
+### 2. 依存関係をインストール
 
 ```bash
 npm install
 ```
 
-### 3. Configure Environment Variables
+### 3. 環境変数の設定
 
-Create a `.env.local` file in the root of the project and set the following environment variables for your PostgreSQL connection and JWT token handling:
+プロジェクトのルートディレクトリに `.env.local` ファイルを作成し、PostgreSQL 接続と JWT トークンの設定のために以下の環境変数を設定します：
 
 ```bash
 POSTGRES_USER=your_db_user
@@ -71,77 +70,77 @@ POSTGRES_HOST=your_db_host
 POSTGRES_PORT=your_db_port
 POSTGRES_DATABASE=your_db_name
 
-JWT_SECRET=your_jwt_secret    # Secret used for JWT token signing
-ADMIN_USER=your_admin_username  # Admin username
-ADMIN_PASSWORD=your_admin_password  # Admin password
+JWT_SECRET=your_jwt_secret    # JWT トークンの署名に使用するシークレット
+ADMIN_USER=your_admin_username  # 管理者のユーザー名
+ADMIN_PASSWORD=your_admin_password  # 管理者のパスワード
 ```
 
-### 4. Set Up the Database
+### 4. データベースのセットアップ
 
-Create the necessary tables in PostgreSQL. Connect to your PostgreSQL instance and run the following SQL command:
+PostgreSQL に接続し、以下の SQL コマンドを実行して必要なテーブルを作成します：
 
 ```sql
 CREATE TABLE assets (
-  date BIGINT NOT NULL,   -- Unix timestamp
-  amount BIGINT NOT NULL  -- Asset amount
+  date BIGINT NOT NULL,   -- Unix タイムスタンプ
+  amount BIGINT NOT NULL  -- 資産額
 );
 ```
 
-### 5. Run the Development Server
+### 5. 開発サーバーの起動
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてアプリケーションを確認します。
 
-## New Features
+## 新機能
 
-### 1. **JWT Authentication**:
-   - **Login**: Users can log in via the `/api/login` endpoint by providing a username and password. On successful login, a JWT token is returned.
-   - **Token validation**: Tokens are automatically validated upon page load. If a token is invalid or expired, it is removed from local storage, and the user is logged out.
-   - **Visitor mode**: If a user is not logged in, they are presented with sample data.
+### 1. **JWT 認証**:
+   - **ログイン**: `/api/login` エンドポイントでユーザー名とパスワードを提供することでログインできます。ログイン成功後に JWT トークンが返されます。
+   - **トークンの検証**: ページ読み込み時にトークンが自動で検証されます。無効または期限切れのトークンはローカルストレージから削除され、ユーザーはログアウトされます。
+   - **訪問者モード**: ログインしていない場合は、サンプルデータが表示されます。
 
-### 2. **Modal-based Asset Entry**:
-   - A clean modal interface allows users to enter new asset data without leaving the page. This modal supports dynamic form validation.
+### 2. **モーダルベースの資産登録**:
+   - 新しい資産データを追加する際、ページ遷移なしでモーダルフォームを使用します。動的なフォームバリデーションもサポートしています。
 
-### 3. **Error Handling**:
-   - Errors during data fetching, token validation, or form submission are handled gracefully, with clear error messages displayed to the user.
+### 3. **エラーハンドリング**:
+   - データ取得、トークン検証、フォーム送信時のエラーを適切に処理し、ユーザーに明確なエラーメッセージを表示します。
 
-### 4. **Zoom and Pan in Charts**:
-   - The Chart.js plugin allows users to zoom in on data points and pan across different date ranges, providing a more interactive experience.
+### 4. **チャートのズームとパン**:
+   - Chart.js のプラグインを使用して、データポイントのズームインや特定の期間の移動が可能です。
 
-### 5. **Mobile and Desktop Responsiveness**:
-   - The interface has been optimized for both mobile devices and desktop browsers, ensuring a seamless experience across all platforms.
+### 5. **モバイルおよびデスクトップのレスポンシブ対応**:
+   - モバイルデバイスやデスクトップブラウザの両方に最適化されており、どのプラットフォームでもシームレスな体験が可能です。
 
-## Deployment
+## デプロイ
 
-### Vercel Deployment
+### Vercel デプロイ
 
-You can deploy this Next.js project directly to [Vercel](https://vercel.com), which is the easiest way to deploy a Next.js app.
+Next.js プロジェクトを直接 [Vercel](https://vercel.com) にデプロイできます。これが最も簡単な方法です。
 
-1. Create an account on Vercel.
-2. Import your GitHub repository into Vercel.
-3. Set up environment variables for your PostgreSQL connection and JWT secret in the Vercel dashboard (same as the `.env.local` file).
-4. Deploy the project.
+1. Vercel にアカウントを作成します。
+2. GitHub リポジトリを Vercel にインポートします。
+3. Vercel ダッシュボードで環境変数を設定します（`.env.local` ファイルと同じ設定）。
+4. プロジェクトをデプロイします。
 
-### Other Deployment Options
+### その他のデプロイ方法
 
-You can also deploy this project to any platform that supports Node.js (e.g., AWS, DigitalOcean, Heroku). Ensure that your environment variables are properly set up, and PostgreSQL is connected.
+Node.js をサポートする任意のプラットフォーム（例：AWS、DigitalOcean、Heroku）にこのプロジェクトをデプロイできます。環境変数が正しく設定され、PostgreSQL に接続できていることを確認してください。
 
-## Usage
+## 使い方
 
-### Authentication and Authorization
-- **Login**: Log in using the modal. Upon successful login, a JWT token is stored in the browser’s local storage.
-- **Token Validation**: Tokens are validated on each page load. If the token is valid, users are automatically logged in; otherwise, the token is cleared and users are logged out.
+### 認証と認可
+- **ログイン**: モーダルを使用してログインします。ログイン成功後、JWT トークンがブラウザのローカルストレージに保存されます。
+- **トークン検証**: 各ページの読み込み時にトークンが検証されます。有効な場合は自動的にログイン状態が維持され、無効な場合はトークンがクリアされてログアウトされます。
 
-### Adding New Records
-1. **Logged-in users**: After logging in, click on the "Add Asset" button to open a modal form.
-2. **Visitor mode**: View sample data without needing to log in.
+### 新しい記録の追加
+1. **ログインしたユーザー**: ログイン後、「Add Asset」ボタンをクリックしてモーダルフォームを開きます。
+2. **訪問者モード**: ログインせずにサンプルデータを閲覧できます。
 
-### Viewing Data
-- **Charts**: The home page displays a historical chart of your net worth. You can zoom in and out using your mouse wheel and pan across the chart.
+### データの表示
+- **チャート**: ホームページには、個人資産の履歴チャートが表示されます。マウスホイールを使ってズームイン・ズームアウトが可能で、パン機能を使って特定の期間を表示できます。
 
-## License
+## ライセンス
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+このプロジェクトは MIT ライセンスの下で提供されています。詳細については [LICENSE](LICENSE) ファイルをご参照ください。
