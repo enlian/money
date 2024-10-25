@@ -1,7 +1,7 @@
 # 個人資産追跡アプリケーション
 
 このプロジェクトは、ユーザーが自分の個人資産を時間とともに追跡できるウェブアプリケーションです。ユーザーは資産を記録でき、アプリケーションはデータをチャートで表示し、資産の増減を視覚化します。  
-<br/><br/>
+<br/>
 デモ: <a href="https://nextjs-chartjs-postgres-assets.vercel.app">https://nextjs-chartjs-postgres-assets.vercel.app</a>
 
 ## 機能
