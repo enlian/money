@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext"; // 使用 AuthContext
 import "./AddAmountModal.css";
 
 const AddAmountModal = () => {
-  const [amount, setAmount] = useState<number | "">("");
+  const [amount, setAmount] = useState<number | string | "">("");
   const [message, setMessage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated } = useAuth(); // 获取是否认证状态
@@ -14,7 +14,9 @@ const AddAmountModal = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (amount === "" || isNaN(Number(amount))) {
+    const sanitizedAmount = String(amount).replace(/,/g, "");
+
+    if (sanitizedAmount === "" || isNaN(Number(sanitizedAmount))) {
       setMessage("请输入有效的金额");
       return;
     }
@@ -25,7 +27,7 @@ const AddAmountModal = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ amount: sanitizedAmount }),
       });
 
       const result = await res.json();
