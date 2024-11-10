@@ -317,7 +317,7 @@ const AssetsPage = () => {
       </div>
 
       <div className="bth-group">
-        <AddAmountModal />
+        <AddAmountModal onSuccess={fetchData}/>
         <LoginModal />
       </div>
     </div>
