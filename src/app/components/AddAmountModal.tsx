@@ -15,7 +15,7 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
   const [message, setMessage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [snackbarIsOpen, setSnackbarIsOpen] = useState(false);
-  const { isAuthenticated } = useAuth(); // 获取是否认证状态
+  const { isAuthenticated, token } = useAuth(); // 获取是否认证状态
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: sanitizedAmount }),
+        body: JSON.stringify({ amount: sanitizedAmount, token }),
       });
 
       const result = await res.json();

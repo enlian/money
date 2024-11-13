@@ -8,7 +8,7 @@ import { Chart, TooltipItem } from "chart.js"; // 引入Chart.js的核心
 import "./assets-page.css";
 import LoginModal from "./components/LoginModal";
 import AddAmountModal from "./components/AddAmountModal";
-import {useAuth } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
 
 interface Dataset {
   label: string;
@@ -48,14 +48,23 @@ const AssetsPage = () => {
   const [latest, setLatest] = useState<number | null>(null); // 最新金额
   const [highPoint, setHighPoint] = useState<number | null>(null); // 高点金额
   const [drawdown, setDrawdown] = useState<number | null>(null); // 当前回撤百分比
-  const { isAuthenticated, isAuthenticating } = useAuth();
+  const { isAuthenticated, isAuthenticating, token } = useAuth();
 
   const fetchData = async () => {
     try {
-      const apiUrl = isAuthenticated ? "/api/assets" : "/api/visitor-assets";
-
-      const response = await fetch(apiUrl);
-      const data = await response.json();
+      let data, response;
+      if (isAuthenticated) {
+        response = await fetch("/api/assets", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+      } else {
+        response = await fetch("/api/visitor-assets");
+      }
+      data = await response.json();
 
       // 获取资产数据的日期和金额
       const labels = data.assets.map((item: { date: string }) =>
@@ -317,7 +326,7 @@ const AssetsPage = () => {
       </div>
 
       <div className="bth-group">
-        <AddAmountModal onSuccess={fetchData}/>
+        <AddAmountModal onSuccess={fetchData} />
         <LoginModal />
       </div>
     </div>

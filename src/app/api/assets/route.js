@@ -1,5 +1,8 @@
 import { query } from "./../../lib/db";
 import yahooFinance from "yahoo-finance2"; // 使用 yahoo-finance2 库
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // 通用的时间戳格式化方法
 const formatTimestamps = (dataArray) => {
@@ -11,14 +14,29 @@ const formatTimestamps = (dataArray) => {
   });
 };
 
-export async function GET() {
+export async function POST(req) {
   try {
-    // 从 PostgreSQL 数据库中获取资产数据，并将日期格式化为 'YYYY-MM-DD'
-    const result = await query(`
+    const body = await req.json();
+    const { token } = body;
+
+    let result;
+
+    if (!token) {
+      return NextResponse.json({ valid: false }, { status: 400 });
+    }
+
+    // 验证 token
+    const decoded = jwt.verify(token, JWT_SECRET); // 明确类型
+    if (decoded.username === process.env.ADMIN_USER) {
+      // 从 PostgreSQL 数据库中获取资产数据，并将日期格式化为 'YYYY-MM-DD'
+      result = await query(`
       SELECT TO_CHAR(TO_TIMESTAMP(date), 'YYYY-MM-DD') AS date, amount 
       FROM assets 
       ORDER BY date ASC
     `);
+    } else {
+      return NextResponse.json({ valid: false }, { status: 401 });
+    }
 
     const earliestDate = result.rows[0]?.date; // 使用资产数据的最早日期
     const latestDate =
