@@ -2,7 +2,7 @@ import './globals.css'
 import { AuthProvider } from './context/AuthContext';
 
 export const metadata = {
-  title: 'Assets Page',
+  title: 'My Assets Page',
   description: 'Assets and investments',
 }
 
