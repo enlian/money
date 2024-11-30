@@ -1,16 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Modal from './Modal';
-import { useAuth } from './../context/AuthContext'; // 使用 AuthContext
-import './loginModal.css';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Modal from "./Modal";
+import { useAuth } from "./../context/AuthContext"; // 使用 AuthContext
+import "./loginModal.css";
+import { Snackbar } from "@mui/material";
 
 const LoginModal = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [snackbarIsOpen, setSnackbarIsOpen] = useState(false);
   const { setToken, verifyToken, isAuthenticated, logout } = useAuth(); // 获取 logout 方法
   const router = useRouter();
 
@@ -18,10 +20,10 @@ const LoginModal = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
+      const response = await fetch("/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
@@ -29,29 +31,48 @@ const LoginModal = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
         setToken(data.token); // 更新全局 token
         setIsOpen(false); // 登录成功后关闭弹窗
         verifyToken(); // 验证 token
-        // window.location.href = '/'; // 使用 window.location.href 进行页面刷新
-    } else {
+        setSnackbarIsOpen(true);
+      } else {
         setError(data.message);
       }
     } catch (err) {
-      setError('发生未知错误，请稍后重试');
+      setError("发生未知错误，请稍后重试");
     }
   };
 
   const handleLogout = () => {
     logout(); // 调用 logout 方法
-    // window.location.href = '/'; // 使用 window.location.href 进行页面刷新
-};
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarIsOpen(false);
+  };
 
   return (
     <>
-      {!isAuthenticated && <button onClick={() => setIsOpen(true)}>登录</button>}
+      {!isAuthenticated && (
+        <button onClick={() => setIsOpen(true)}>登录</button>
+      )}
       {isAuthenticated && <button onClick={handleLogout}>退出</button>}
-
+      <Snackbar
+        open={snackbarIsOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message="登录成功"
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        ContentProps={{
+          sx: {
+            backgroundColor: "white",
+          },
+        }}
+      />
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h3>登录</h3>
         <form onSubmit={handleLogin}>
