@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import moment from "moment";
 import "chart.js/auto";
 import { Chart, TooltipItem } from "chart.js"; // 引入Chart.js的核心
@@ -12,7 +12,7 @@ import { useAuth } from "./context/AuthContext";
 
 interface Dataset {
   label: string;
-  data: (number | null)[];
+  data: number[];
   [key: string]: string | number | (number | null)[] | boolean | undefined; // 更宽泛但明确的类型
 }
 
@@ -40,7 +40,7 @@ const getReturnrate = (data: AssetData[], range: number) => {
 
   const startAmount = start?.amount ?? 0;
   const endAmount = end?.amount ?? 0;
-  return ((endAmount - startAmount) / startAmount) * 100 + "%";
+  return ((endAmount - startAmount) / startAmount) * 100;
 };
 
 // 创建一个通用的获取金额数组的方法
@@ -61,6 +61,10 @@ const AssetsPage = () => {
   const [assetsChartData, setAssetsChartData] = useState<ChartData | null>(
     null
   );
+  const [barChartData, setBarChartData] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [latest, setLatest] = useState<number | null>(null); // 最新金额
@@ -95,6 +99,23 @@ const AssetsPage = () => {
       const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
       const btcAmounts = getAmounts(data.bitcoin, "amount");
       const ethAmounts = getAmounts(data.ethereum, "amount");
+
+      //bar数据
+      setBarChartData({
+        labels: ["今年", "3年", "5年"],
+        datasets: [
+          {
+            label: "自有资产",
+            data: [
+              getReturnrate(data.assets, 1),
+              getReturnrate(data.assets, 3),
+              getReturnrate(data.assets, 5),
+            ],
+            borderColor: "rgba(255, 0, 0, 1)",
+            backgroundColor: "rgba(255, 0, 0, 0.2)",
+          },
+        ],
+      });
 
       // 设置ROI图表数据
       setROIChartData({
@@ -244,6 +265,10 @@ const AssetsPage = () => {
       intersect: false,
     },
     plugins: {
+      title: {
+        display: true,
+        text: "投资走势图", // 图表标题
+      },
       tooltip: {
         mode: "index" as const,
         intersect: false,
@@ -299,6 +324,47 @@ const AssetsPage = () => {
     },
   };
 
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, // 禁用固定宽高比
+    plugins: {
+      title: {
+        display: true,
+        text: "投资回报率对比", // 图表标题
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem: TooltipItem<"bar">) {
+            const value = tooltipItem.raw as number; // 获取原始值
+            return `${tooltipItem.dataset.label}: ${value.toFixed(2)}%`; // 格式化为百分比
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          callback: function (value: number | string) {
+            if (typeof value === "number") {
+              return `${value}%`; // 在纵坐标标签后加上百分号
+            }
+            return value;
+          },
+        },
+        title: {
+          display: true,
+          text: "回报率 (%)", // 给纵坐标加上标题
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "时间范围", // 给横坐标加上标题
+        },
+      },
+    },
+  };
+
   if (errorMessage) {
     return (
       <div className="error-message">
@@ -320,28 +386,25 @@ const AssetsPage = () => {
   }
 
   return (
-    <div>
-      <span className="title">投资回报率对比</span>
-      <div style={{ height: 400 }}>
-        <Line data={roiChartData} options={roiChartOptions} />
+    <div className="chartPage">
+      <div className="chart">
+        {/* <Line data={roiChartData} options={roiChartOptions} /> */}
+        <Bar data={barChartData} options={barChartOptions} />
       </div>
       <hr />
       {/* 显示最新、高点和当前回撤 */}
-      <div className="info-section">
-        <span className="title1">资产走势图</span>
-        <div className="right-info">
-          <div>
-            最新：{roiChartData?.labels[roiChartData.labels.length - 1]}
-            {"  "}
-            {latest ? (latest / 10000).toFixed(2) + "万" : ""}
-          </div>
-          <div>
-            高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : ""}{" "}
-            {drawdown ? "当前回撤：" + drawdown + "%" : ""}
-          </div>
+      <div className="right-info">
+        <div>
+          最新：{roiChartData?.labels[roiChartData.labels.length - 1]}
+          {"  "}
+          {latest ? (latest / 10000).toFixed(2) + "万" : ""}
+        </div>
+        <div>
+          高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : ""}{" "}
+          {drawdown ? "当前回撤：" + drawdown + "%" : ""}
         </div>
       </div>
-      <div style={{ height: 400 }}>
+      <div className="chart">
         <Line data={assetsChartData} options={assetsChartOptions} />
       </div>
 

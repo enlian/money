@@ -2,69 +2,61 @@ hr {
   margin: 20px 0 20px 0;
   opacity: 0.2;
 }
-span,div{
+span,
+div {
   color: #555;
 }
 
-.title{
-  width: 100%;
-  display: block;
-  text-align: center;
-}
-
-.bth-group{
+.bth-group {
   position: absolute;
   top: 20px;
   right: 20px;
-  button{
+  button {
     margin-right: 10px;
   }
 }
 
 @media (max-width: 600px) {
-  .bth-group{
+  .bth-group {
     top: 6px;
     right: 13px;
 
-    button{
-
+    button {
       padding: 3px 5px;
       font-size: smaller;
     }
-
   }
-
 }
 
-.info-section {
+.chartPage {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative; /* 保证中间元素可以精确定位 */
-  height: 20px;
-  .title1 {
-    position: absolute;
-    left: 50%; /* 将"资产走势图"的左边位置设置在父容器的50%处 */
-    transform: translateX(-50%); /* 将"资产走势图"从左边向左平移50%来实现居中 */
+  width: 100%;
+  canvas {
+    width: 100%;
   }
+  .chart {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.right-info {
+  margin-left: auto; /* 确保右侧信息对齐到右边 */
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  font-size: 0.8em; /* 调整为更小的字体大小 */
+}
+@media (max-width: 600px) {
   .right-info {
-    margin-left: auto; /* 确保右侧信息对齐到右边 */
-    position: absolute;
-    right: 15px;
-    top:5px;
-    font-size: 0.8em; /* 调整为更小的字体大小 */
-
-  }
-  @media (max-width: 600px) {
-    .title1{
-      left: 10px; /* 将"资产走势图"的左边位置设置在父容器的50%处 */
-      transform: translateX(0%); /* 将"资产走势图"从左边向左平移50%来实现居中 */
-    }
-    .right-info {
-      top:-10px;
-      font-size: 0.4em; /* 调整为更小的字体大小 */
-    }
-
+    font-size: 0.4em; /* 调整为更小的字体大小 */
   }
 }
 
