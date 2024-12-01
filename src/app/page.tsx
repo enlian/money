@@ -25,6 +25,24 @@ interface AssetData {
   [key: string]: number; // 定义对象的 key 是 string，值是 number
 }
 
+//计算1.3.5年的回报率
+const getReturnrate = (data: AssetData[], range: number) => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const startYear = currentYear - (range - 1);
+  const start = data.find(
+    (item) => new Date(item.date) >= new Date(`${startYear}-01-01`)
+  );
+  const end = data
+    .slice()
+    .reverse()
+    .find((item) => new Date(item.date) <= new Date(`${currentYear}-12-31`));
+
+  const startAmount = start?.amount ?? 0;
+  const endAmount = end?.amount ?? 0;
+  return ((endAmount - startAmount) / startAmount) * 100 + "%";
+};
+
 // 创建一个通用的获取金额数组的方法
 const getAmounts = (data: AssetData[], key: string) => {
   return data.map((item) => item[key]);
@@ -285,7 +303,9 @@ const AssetsPage = () => {
     return (
       <div className="error-message">
         <p>{errorMessage}</p>
-        <div className="retry-button">重试</div>
+        <div className="retry-button" onClick={fetchData}>
+          重试
+        </div>
       </div>
     );
   }
