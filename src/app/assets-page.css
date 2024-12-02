@@ -1,39 +1,11 @@
-hr {
-  margin: 20px 0 20px 0;
-  opacity: 0.2;
-}
-span,
-div {
-  color: #555;
-}
-
-.bth-group {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  button {
-    margin-right: 10px;
-  }
-}
-
-@media (max-width: 600px) {
-  .bth-group {
-    top: 6px;
-    right: 13px;
-
-    button {
-      padding: 3px 5px;
-      font-size: smaller;
-    }
-  }
-}
-
 .chartPage {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+  max-width: 700px;
+  position: relative;
   canvas {
     width: 100%;
   }
@@ -56,7 +28,9 @@ div {
 }
 @media (max-width: 600px) {
   .right-info {
-    font-size: 0.4em; /* 调整为更小的字体大小 */
+    top: 5px;
+    left: 12px;
+    font-size: 0.3em; /* 调整为更小的字体大小 */
   }
 }
 
@@ -84,6 +58,36 @@ div {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+hr {
+  margin: 20px 0 20px 0;
+  opacity: 0.2;
+}
+span,
+div {
+  color: #555;
+}
+
+.bth-group {
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  button {
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .bth-group {
+    top: 9px;
+    right: 10px;
+
+    button {
+      padding: 3px 5px;
+      font-size: smaller;
+    }
   }
 }
 
