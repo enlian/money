@@ -1,4 +1,5 @@
 import colorLib from "@kurkle/color";
+const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
 export function transparentize(value, opacity) {
   var alpha = opacity ? opacity : 0.5;
@@ -29,4 +30,16 @@ export const CHART_COLORS = {
   blue: "rgb(54, 162, 235)",
   purple: "rgb(153, 102, 255)",
   grey: "rgb(201, 203, 207)",
+};
+
+// 获取外部API的汇率数据
+export const getExchangeRate = async () => {
+  const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;
+  const url1 = `https://wise.com/rates/live?source=USD&target=CNY`;
+  const response = await fetch(url1);
+  const data = await response.json();
+  // 计算 USD/CNY 汇率
+  // const usdToCny = data.rates.CNY / data.rates.USD;
+
+  return data.value;
 };

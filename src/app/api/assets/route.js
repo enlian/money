@@ -1,9 +1,9 @@
 import { query } from "./../../lib/db";
 import yahooFinance from "yahoo-finance2"; // 使用 yahoo-finance2 库
 import jwt from "jsonwebtoken";
+import { getExchangeRate } from "./../../lib/utils";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
 // 通用的时间戳格式化方法
 const formatTimestamps = (dataArray) => {
@@ -13,18 +13,6 @@ const formatTimestamps = (dataArray) => {
       amount: item.close, // 收盘价作为金额
     };
   });
-};
-
-// 获取外部API的汇率数据
-const getExchangeRate = async () => {
-  const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;
-  const url1 = `https://wise.com/rates/live?source=USD&target=CNY`;
-  const response = await fetch(url1);
-  const data = await response.json();
-  // 计算 USD/CNY 汇率
-  // const usdToCny = data.rates.CNY / data.rates.USD;
-
-  return data.value;
 };
 
 export async function POST(req) {
