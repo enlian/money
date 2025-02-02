@@ -17,15 +17,14 @@ const formatTimestamps = (dataArray) => {
 
 // 获取外部API的汇率数据
 const getExchangeRate = async () => {
-  const response = await fetch(
-    `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`
-  );
+  const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;
+  const url1 = `https://wise.com/rates/live?source=USD&target=CNY`;
+  const response = await fetch(url1);
   const data = await response.json();
   // 计算 USD/CNY 汇率
-  const usdToCny = data.rates.CNY / data.rates.USD;
+  // const usdToCny = data.rates.CNY / data.rates.USD;
 
-  console.log(`美元对人民币汇率: 1 USD = ${usdToCny.toFixed(4)} CNY`);
-  return data;
+  return data.value;
 };
 
 export async function POST(req) {
@@ -93,6 +92,7 @@ export async function POST(req) {
       nasdaq: formatTimestamps(nasdaqData.quotes),
       bitcoin: formatTimestamps(btcData.quotes),
       ethereum: formatTimestamps(ethData.quotes),
+      exchangeRate: getExchangeRate(),// 获取汇率
     };
 
     return new Response(JSON.stringify(responseData), {
