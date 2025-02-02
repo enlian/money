@@ -3,6 +3,7 @@ import yahooFinance from "yahoo-finance2"; // 使用 yahoo-finance2 库
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
 // 通用的时间戳格式化方法
 const formatTimestamps = (dataArray) => {
@@ -14,7 +15,18 @@ const formatTimestamps = (dataArray) => {
   });
 };
 
+// 获取外部API的汇率数据
+const getExchangeRate = async () => {
+  const response = await fetch(
+    `https://data.fixer.io/api/symbols?access_key=${EXCHANGE_RATE_API_KEY}`
+  );
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
+
 export async function POST(req) {
+  getExchangeRate();
   try {
     const body = await req.json();
     const { token } = body;
