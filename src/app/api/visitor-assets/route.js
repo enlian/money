@@ -1,4 +1,5 @@
 import yahooFinance from 'yahoo-finance2'; // 使用 yahoo-finance2 库
+import { getExchangeRate } from "./../../lib/utils";
 
 // 通用的时间戳格式化方法
 const formatTimestamps = (dataArray) => {
@@ -15,6 +16,7 @@ export async function GET() {
     // 统一设置日期范围为 2022 年底到当前最新日期
     const startDate = '2022-12-31';
     const endDate = new Date().toISOString().split('T')[0]; // 当前日期
+    const exchangeRate = await getExchangeRate(); // 获取汇率
 
     // 获取道琼斯指数数据
     const dowJonesData = await yahooFinance.chart('^DJI', {
@@ -58,6 +60,7 @@ export async function GET() {
       nasdaq: formatTimestamps(nasdaqData.quotes), // 纳斯达克数据
       bitcoin: formatTimestamps(btcData.quotes), // 比特币数据
       ethereum: formatTimestamps(ethData.quotes), // 以太坊数据
+      exchangeRate: exchangeRate
     };
 
     return new Response(JSON.stringify(responseData), { status: 200 });

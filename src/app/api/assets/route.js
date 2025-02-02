@@ -16,7 +16,6 @@ const formatTimestamps = (dataArray) => {
 };
 
 export async function POST(req) {
-  getExchangeRate();
   try {
     const body = await req.json();
     const { token } = body;
