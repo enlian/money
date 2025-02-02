@@ -2,8 +2,8 @@ import './globals.css'
 import { AuthProvider } from './context/AuthContext';
 
 export const metadata = {
-  title: 'My Assets Page',
-  description: 'Assets and investments',
+  title: '我的资产统计',
+  description: '资产统计，并与当下热门资产做对比',
 }
 
 export default function RootLayout({
