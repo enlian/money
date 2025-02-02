@@ -85,6 +85,8 @@ export async function POST(req) {
       interval: "1d", // 每日数据
     });
 
+    const exchangeRate = await getExchangeRate(); // 获取汇率
+
     // 组合数据库数据与外部API数据
     const responseData = {
       assets: result.rows,
@@ -92,7 +94,7 @@ export async function POST(req) {
       nasdaq: formatTimestamps(nasdaqData.quotes),
       bitcoin: formatTimestamps(btcData.quotes),
       ethereum: formatTimestamps(ethData.quotes),
-      exchangeRate: getExchangeRate(),// 获取汇率
+      exchangeRate: exchangeRate
     };
 
     return new Response(JSON.stringify(responseData), {

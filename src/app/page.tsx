@@ -39,8 +39,7 @@ const getReturnrate = (data: AssetData[], range: number) => {
     .reverse()
     .find((item) => new Date(item.date) <= new Date(`${currentYear}-12-31`));
 
-    console.log(start,end);
-    
+  console.log(start, end);
 
   const startAmount = start?.amount ?? 0;
   const endAmount = end?.amount ?? 0;
@@ -60,6 +59,7 @@ const AssetsPage = () => {
     labels: [],
     datasets: [],
   });
+  const [rate, setRate] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [latest, setLatest] = useState<number | null>(null); // 最新金额
@@ -87,6 +87,8 @@ const AssetsPage = () => {
       const labels = data.assets.map((item: { date: string }) =>
         moment(item.date).format("YY-MM-DD")
       );
+
+      setRate(data.exchangeRate); //设置汇率
 
       // 使用通用方法获取不同的数据集
       const amounts = getAmounts(data.assets, "amount");
@@ -329,6 +331,7 @@ const AssetsPage = () => {
           高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : ""}{" "}
           {drawdown ? "当前回撤：" + drawdown + "%" : ""}
         </div>
+        {rate && latest?(<div>美元汇率：{rate} 美元总额：{((latest/rate)/10000).toFixed(2) + "万"}</div>):null}
       </div>
       <div className="chart">
         <Line data={assetsChartData} options={assetsChartOptions} />
