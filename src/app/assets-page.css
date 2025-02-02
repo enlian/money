@@ -6,6 +6,7 @@
   width: 100%;
   max-width: 700px;
   position: relative;
+  padding-top: 50px;
   canvas {
     width: 100%;
   }
@@ -16,7 +17,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
   }
 }
 
@@ -26,13 +26,6 @@
   left: 15px;
   top: 15px;
   font-size: 0.8em; /* 调整为更小的字体大小 */
-}
-@media (max-width: 600px) {
-  .right-info {
-    top: 5px;
-    left: 12px;
-    font-size: 0.3em; /* 调整为更小的字体大小 */
-  }
 }
 
 .loading-container {
@@ -90,6 +83,12 @@ div {
       font-size: smaller;
     }
   }
+  .right-info {
+    top: 5px;
+    left: 12px;
+    font-size: 0.3em; /* 调整为更小的字体大小 */
+  }
+  hr{margin: 0;}
 }
 
 .error-message {
