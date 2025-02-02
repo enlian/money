@@ -18,10 +18,13 @@ const formatTimestamps = (dataArray) => {
 // 获取外部API的汇率数据
 const getExchangeRate = async () => {
   const response = await fetch(
-    `https://data.fixer.io/api/symbols?access_key=${EXCHANGE_RATE_API_KEY}`
+    `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`
   );
   const data = await response.json();
-  console.log(data);
+  // 计算 USD/CNY 汇率
+  const usdToCny = data.rates.CNY / data.rates.USD;
+
+  console.log(`美元对人民币汇率: 1 USD = ${usdToCny.toFixed(4)} CNY`);
   return data;
 };
 
