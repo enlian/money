@@ -10,6 +10,7 @@ import LoginModal from "./components/LoginModal";
 import AddAmountModal from "./components/AddAmountModal";
 import { useAuth } from "./context/AuthContext";
 import { CHART_COLORS, transparentize } from "././lib/utils.js";
+import Header from './components/Header';
 
 interface Dataset {
   label: string;
@@ -316,6 +317,7 @@ const AssetsPage = () => {
 
   return (
     <div className="chartPage">
+      <Header />
       <div className="chart">
         <Bar data={barChartData} options={barChartOptions} />
       </div>
