@@ -20,13 +20,6 @@
   }
 }
 
-.right-info {
-  margin-left: auto; /* 确保右侧信息对齐到右边 */
-  position: absolute;
-  left: 15px;
-  top: 15px;
-  font-size: 0.8em; /* 调整为更小的字体大小 */
-}
 
 .loading-container {
   display: flex;
@@ -82,11 +75,6 @@ div {
       padding: 3px 5px;
       font-size: smaller;
     }
-  }
-  .right-info {
-    top: 5px;
-    left: 12px;
-    font-size: 0.3em; /* 调整为更小的字体大小 */
   }
   hr{margin: 0;}
 }

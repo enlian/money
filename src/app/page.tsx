@@ -15,7 +15,7 @@ import Header from './components/Header';
 interface Dataset {
   label: string;
   data: number[];
-  [key: string]: string | number | (number | null)[] | boolean | undefined; // 更宽泛但明确的类型
+  [key: string]: string | number | (number | null)[] | boolean | undefined; 
 }
 
 interface ChartData {
@@ -24,7 +24,7 @@ interface ChartData {
 }
 
 interface AssetData {
-  [key: string]: number; // 定义对象的 key 是 string，值是 number
+  [key: string]: number; 
 }
 
 //计算1.3.5年的回报率
@@ -317,24 +317,18 @@ const AssetsPage = () => {
 
   return (
     <div className="chartPage">
-      <Header />
+      <Header 
+        assetsChartData={assetsChartData}
+        latest={latest}
+        highPoint={highPoint}
+        drawdown={drawdown}
+        rate={rate}
+      />
       <div className="chart">
         <Bar data={barChartData} options={barChartOptions} />
       </div>
       <hr />
-      {/* 显示最新、高点和当前回撤 */}
-      <div className="right-info">
-        <div>
-          最新：{assetsChartData?.labels[assetsChartData.labels.length - 1]}
-          {"  "}
-          {latest ? (latest / 10000).toFixed(2) + "万" : ""}
-        </div>
-        <div>
-          高点：{highPoint ? (highPoint / 10000).toFixed(2) + "万" : ""}{" "}
-          {drawdown ? "当前回撤：" + drawdown + "%" : ""}
-        </div>
-        {rate && latest?(<div>美元汇率：{rate} 美元总额：{((latest/rate)/10000).toFixed(2) + "万"}</div>):null}
-      </div>
+      
       <div className="chart">
         <Line data={assetsChartData} options={assetsChartOptions} />
       </div>
