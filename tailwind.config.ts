@@ -13,7 +13,7 @@ const config: Config = {
         border: "hsl(214, 32%, 91%)",
         background: "hsl(220, 14%, 96%)",
         foreground: "hsl(222, 47%, 11%)",
-        primary: "hsl(221, 83%, 53%)",
+        primary: "hsl(203, 100%, 61%)",
         secondary: "hsl(210, 40%, 96%)",
         accent: "hsl(174, 70%, 60%)",
         destructive: "hsl(348, 100%, 61%)",

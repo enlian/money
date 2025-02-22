@@ -4,17 +4,19 @@ import { useEffect, useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
 import moment from "moment";
 import "chart.js/auto";
-import { Chart, TooltipItem } from "chart.js"; 
+import { Chart, TooltipItem } from "chart.js";
 import LoginModal from "./components/LoginModal";
 import AddAmountModal from "./components/AddAmountModal";
 import { useAuth } from "./context/AuthContext";
 import { CHART_COLORS, transparentize } from "././lib/utils";
-import Header from './components/Header';
+import Header from "./components/Header";
+import Spinner from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 interface Dataset {
   label: string;
   data: number[];
-  [key: string]: string | number | (number | null)[] | boolean | undefined; 
+  [key: string]: string | number | (number | null)[] | boolean | undefined;
 }
 
 interface ChartData {
@@ -23,7 +25,7 @@ interface ChartData {
 }
 
 interface AssetData {
-  [key: string]: number; 
+  [key: string]: number;
 }
 
 //计算1.3.5年的回报率
@@ -38,8 +40,6 @@ const getReturnrate = (data: AssetData[], range: number) => {
     .slice()
     .reverse()
     .find((item) => new Date(item.date) <= new Date(`${currentYear}-12-31`));
-
-  console.log(start, end);
 
   const startAmount = start?.amount ?? 0;
   const endAmount = end?.amount ?? 0;
@@ -61,10 +61,7 @@ const AssetsPage = () => {
   });
   const [rate, setRate] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const [latest, setLatest] = useState<number | null>(null); // 最新金额
-  const [highPoint, setHighPoint] = useState<number | null>(null); // 高点金额
-  const [drawdown, setDrawdown] = useState<number | null>(null); // 当前回撤百分比
+  const [amounts, setAmounts] = useState<number[]>([]);
   const { isAuthenticated, isAuthenticating, token } = useAuth();
 
   const fetchData = async () => {
@@ -92,10 +89,11 @@ const AssetsPage = () => {
 
       // 使用通用方法获取不同的数据集
       const amounts = getAmounts(data.assets, "amount");
-      const sp500Amounts = getAmounts(data.sp500, "amount");
-      const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
-      const btcAmounts = getAmounts(data.bitcoin, "amount");
-      const ethAmounts = getAmounts(data.ethereum, "amount");
+      setAmounts(amounts);
+      // const sp500Amounts = getAmounts(data.sp500, "amount");
+      // const nasdaqAmounts = getAmounts(data.nasdaq, "amount");
+      // const btcAmounts = getAmounts(data.bitcoin, "amount");
+      // const ethAmounts = getAmounts(data.ethereum, "amount");
 
       //投资回报率bar图数据
       setBarChartData({
@@ -161,15 +159,6 @@ const AssetsPage = () => {
           },
         ],
       });
-
-      // 计算并设置最新、高点和当前回撤
-      const latestAmount = amounts[amounts.length - 1]; // 最新的金额
-      const maxAmount = Math.max(...amounts); // 高点金额
-      const currentDrawdown = ((maxAmount - latestAmount) / maxAmount) * 100; // 当前回撤
-
-      setLatest(latestAmount);
-      setHighPoint(maxAmount);
-      setDrawdown(parseFloat(currentDrawdown.toFixed(2))); // 保留两位小数
     } catch (error) {
       setErrorMessage("无法获取数据，请稍后重试: " + error);
     }
@@ -298,43 +287,31 @@ const AssetsPage = () => {
     return (
       <div className="error-message">
         <p>{errorMessage}</p>
-        <div className="retry-button" onClick={fetchData}>
+        <Button className="retry-button" onClick={fetchData}>
           重试
-        </div>
+        </Button>
       </div>
     );
   }
 
   if (!barChartData || !assetsChartData) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p>加载中...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
-    <div className="p-6 space-y-6 bg-gray-100 min-h-screen">
-      <Header 
-        assetsChartData={assetsChartData}
-        latest={latest}
-        highPoint={highPoint}
-        drawdown={drawdown}
-        rate={rate}
-      />
-      <div className="bg-white p-4 shadow-md rounded-lg">
-        <Bar data={barChartData} options={barChartOptions} />
-      </div>
-      <hr className="border-t border-gray-300" />
-      
-      <div className="bg-white p-4 shadow-md rounded-lg">
-        <Line data={assetsChartData} options={assetsChartOptions} />
+    <div className="flex flex-col gap-4 p-6 bg-gray-50 h-full">
+      <div className="flex justify-end gap-4">
+        <LoginModal />
+        <AddAmountModal onSuccess={fetchData} />
       </div>
 
-      <div className="flex space-x-4 mt-4">
-        <AddAmountModal onSuccess={fetchData} />
-        <LoginModal />
+      <Header amounts={amounts} assetsChartData={assetsChartData} rate={rate} />
+      <div className="h-[350px]">
+        <Bar data={barChartData} options={barChartOptions} />
+      </div>
+
+      <div className="h-[350px]">
+        <Line data={assetsChartData} options={assetsChartOptions} />
       </div>
     </div>
   );

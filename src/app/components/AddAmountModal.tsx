@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
@@ -12,7 +18,6 @@ interface AddAmountModalProps {
 
 const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
   const [amount, setAmount] = useState<number | string | "">("");
-  const [message, setMessage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated, token } = useAuth();
 
@@ -46,7 +51,9 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
   return (
     <>
       {isAuthenticated && (
-        <Button onClick={() => setIsOpen(true)}>添加</Button>
+        <Button className="text-white" onClick={() => setIsOpen(true)}>
+          添加
+        </Button>
       )}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
@@ -54,7 +61,9 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
             <DialogTitle>添加数据</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <label htmlFor="amount" className="block text-sm font-medium">输入金额:</label>
+            <label htmlFor="amount" className="block text-sm font-medium">
+              输入金额:
+            </label>
             <input
               id="amount"
               type="number"

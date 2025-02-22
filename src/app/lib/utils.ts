@@ -1,6 +1,6 @@
 import colorLib from "@kurkle/color";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
@@ -37,16 +37,16 @@ export const CHART_COLORS = {
 
 // 获取外部API的汇率数据
 export const getExchangeRate = async () => {
-  const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;
-  const url1 = `https://wise.com/rates/live?source=USD&target=CNY`;
-  const response = await fetch(url1);
+  //const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;
+  const url = `https://wise.com/rates/live?source=USD&target=CNY`;
+  const response = await fetch(url);
   const data = await response.json();
   // 计算 USD/CNY 汇率
   // const usdToCny = data.rates.CNY / data.rates.USD;
 
-  return data.value;
+  return data.value.toFixed(2);
 };
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
