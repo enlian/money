@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Modal from "./Modal";
 import { useAuth } from "./../context/AuthContext"; // 使用 AuthContext
-import "./loginModal.css";
 import { Snackbar } from "@mui/material";
 
 const LoginModal = () => {

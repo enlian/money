@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
 import moment from "moment";
 import "chart.js/auto";
-import { Chart, TooltipItem } from "chart.js"; // 引入Chart.js的核心
-import "./assets-page.css";
+import { Chart, TooltipItem } from "chart.js"; 
 import LoginModal from "./components/LoginModal";
 import AddAmountModal from "./components/AddAmountModal";
 import { useAuth } from "./context/AuthContext";
@@ -316,7 +315,7 @@ const AssetsPage = () => {
   }
 
   return (
-    <div className="chartPage">
+    <div className="p-6 space-y-6 bg-gray-100 min-h-screen">
       <Header 
         assetsChartData={assetsChartData}
         latest={latest}
@@ -324,16 +323,16 @@ const AssetsPage = () => {
         drawdown={drawdown}
         rate={rate}
       />
-      <div className="chart">
+      <div className="bg-white p-4 shadow-md rounded-lg">
         <Bar data={barChartData} options={barChartOptions} />
       </div>
-      <hr />
+      <hr className="border-t border-gray-300" />
       
-      <div className="chart">
+      <div className="bg-white p-4 shadow-md rounded-lg">
         <Line data={assetsChartData} options={assetsChartOptions} />
       </div>
 
-      <div className="bth-group">
+      <div className="flex space-x-4 mt-4">
         <AddAmountModal onSuccess={fetchData} />
         <LoginModal />
       </div>

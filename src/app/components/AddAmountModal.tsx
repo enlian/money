@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { useAuth } from "../context/AuthContext"; // 使用 AuthContext
-import "./AddAmountModal.css";
 import Snackbar from "@mui/material/Snackbar";
 
 interface AddAmountModalProps {
