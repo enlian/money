@@ -1,4 +1,7 @@
 import colorLib from "@kurkle/color";
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
 export function transparentize(value, opacity) {
@@ -43,3 +46,7 @@ export const getExchangeRate = async () => {
 
   return data.value;
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
