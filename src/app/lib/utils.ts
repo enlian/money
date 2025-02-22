@@ -4,8 +4,8 @@ import { twMerge } from "tailwind-merge"
 
 const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
-export function transparentize(value, opacity) {
-  var alpha = opacity ? opacity : 0.5;
+export function transparentize(value: string, opacity?: number): string {
+  const alpha = opacity !== undefined ? opacity : 0.5;
   return colorLib(value).alpha(alpha).rgbString();
 }
 
@@ -21,7 +21,7 @@ const COLORS = [
   "#8549ba",
 ];
 
-export function color(index) {
+export function color(index: number): string {
   return COLORS[index % COLORS.length];
 }
 

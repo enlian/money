@@ -8,7 +8,7 @@ import { Chart, TooltipItem } from "chart.js";
 import LoginModal from "./components/LoginModal";
 import AddAmountModal from "./components/AddAmountModal";
 import { useAuth } from "./context/AuthContext";
-import { CHART_COLORS, transparentize } from "././lib/utils.js";
+import { CHART_COLORS, transparentize } from "././lib/utils";
 import Header from './components/Header';
 
 interface Dataset {
