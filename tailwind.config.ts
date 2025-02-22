@@ -18,6 +18,13 @@ const config: Config = {
         accent: "hsl(174, 70%, 60%)",
         destructive: "hsl(348, 100%, 61%)",
         muted: "hsl(215, 16%, 47%)",
+        ring: "hsl(215, 20%, 65%)",
+      },
+      ringWidth: {
+        3: "3px",
+      },
+      outline: {
+        ring: "2px solid hsl(215, 20%, 65%)",
       },
     },
   },
