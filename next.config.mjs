@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ✅ 让 Vercel 构建时忽略 TypeScript & ESLint 错误
+  // 让 Vercel 构建时忽略 TypeScript & ESLint 错误
   typescript: {
     ignoreBuildErrors: true, // 忽略 TypeScript 错误
   },
@@ -8,7 +8,7 @@ const nextConfig = {
     ignoreDuringBuilds: true, // 忽略 ESLint 警告
   },
 
-  // ✅ 继续自定义 Webpack 配置，避免 `punycode` 警告
+  // 继续自定义 Webpack 配置，避免 `punycode` 警告
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -19,23 +19,10 @@ const nextConfig = {
     return config;
   },
 
-  // ✅ 增强 Webpack 性能（减少构建时间）
+  // 增强 Webpack 性能（减少构建时间）
   experimental: {
     scrollRestoration: true, // 启用滚动恢复
     optimizeCss: true, // 优化 CSS 加载
-  },
-
-  // ✅ 允许跨域请求（如果 API 需要）
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          { key: "Access-Control-Allow-Origin", value: "*" },
-          { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
-        ],
-      },
-    ];
   },
 };
 
