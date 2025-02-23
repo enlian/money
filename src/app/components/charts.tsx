@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Chart, Line, Bar } from "react-chartjs-2";
+import { Chart as ChartJS, registerables, TooltipItem } from "chart.js";
+import moment from "moment";
+import { useEffect, useMemo, useState } from "react";
+import { Bar, Line } from "react-chartjs-2";
+import type { AllData, ChartData } from "../lib/types";
 import {
   CHART_COLORS,
-  transparentize,
-  getReturnrate,
   getAmounts,
+  getReturnrate,
+  transparentize,
 } from "../lib/utils";
-import moment from "moment";
-import { TooltipItem, Chart as ChartJS, registerables } from "chart.js";
-import type { ChartData, AllData } from "../lib/types";
 
 interface ChartProps {
   data: AllData | null;

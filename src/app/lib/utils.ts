@@ -1,7 +1,7 @@
 import colorLib from "@kurkle/color";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { AssetData, AllData } from "../lib/types";
+import type { AssetData } from "../lib/types";
 
 const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
