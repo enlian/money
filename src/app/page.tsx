@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import "chart.js/auto";
 import LoginModal from "./components/login-modal";
 import AddAmountModal from "./components/add-amount-modal";
@@ -11,45 +11,36 @@ import Charts from "./components/charts";
 import type { AllData } from "./lib/types";
 import Error from "./components/error";
 
+const fetchAssets = async (token: string | null, isAuthenticated: boolean) => {
+  const endpoint = isAuthenticated ? "/api/assets" : "/api/visitor-assets";
+  const options = isAuthenticated
+    ? {
+        method: "POST",
+        body: JSON.stringify({ token }),
+      }
+    : undefined;
+
+  const response = await fetch(endpoint, options);
+  return response.json();
+};
+
 const AssetsPage = () => {
-  const [data, setData] = useState<AllData | null>(null);
-  const [rate, setRate] = useState<number | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { isAuthenticated, isAuthenticating, token } = useAuth();
 
-  const fetchData = async () => {
-    try {
-      let data, response;
-      if (isAuthenticated) {
-        response = await fetch("/api/assets", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token }),
-        });
-      } else {
-        response = await fetch("/api/visitor-assets");
-      }
-      data = await response.json();
-      setData(data);
-      setRate(data.exchangeRate); //设置汇率
-    } catch (error) {
-      setErrorMessage("无法获取数据，请稍后重试");
-    }
-  };
+  // 使用 react-query 进行数据请求
+  const { data, error, isLoading, refetch } = useQuery<AllData>({
+    queryKey: ["assets", isAuthenticated, token], // 缓存键
+    queryFn: () => fetchAssets(token, isAuthenticated),
+    enabled: !isAuthenticating, // 只有在认证完成后才请求数据
+    staleTime: 1000 * 60 * 5, // 5分钟内不重新获取数据
+    retry: 2, // 失败时自动重试 2 次
+  });
 
-  useEffect(() => {
-    if (!isAuthenticating) {
-      fetchData(); // 仅在 `isAuthenticating` 为 false 时发起请求
-    }
-  }, [isAuthenticated, isAuthenticating]);
-
-  if (errorMessage) {
-    return <Error errorMessage={errorMessage} fetchData={fetchData} />;
+  if (error) {
+    return <Error errorMessage={error.message} fetchData={refetch} />;
   }
 
-  if (!data?.assets.length) {
+  if (isLoading || !data?.assets.length) {
     return <Spinner />;
   }
 
@@ -57,10 +48,10 @@ const AssetsPage = () => {
     <div className="flex flex-col gap-4 p-6 bg-gray-50 h-full max-w-3xl">
       <div className="flex justify-end gap-3">
         <LoginModal />
-        <AddAmountModal onSuccess={fetchData} />
+        <AddAmountModal onSuccess={refetch} />
       </div>
 
-      <Header data={data} rate={rate ?? 0} />
+      <Header data={data} rate={data.exchangeRate} />
       <Charts data={data} />
     </div>
   );

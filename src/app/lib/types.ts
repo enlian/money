@@ -3,6 +3,7 @@ export interface AllData {
   sp500: AssetData[];
   nasdaq: AssetData[];
   bitcoin: AssetData[];
+  exchangeRate: number | 7.25;
 }
 
 export interface Dataset {
