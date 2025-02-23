@@ -1,6 +1,7 @@
 import colorLib from "@kurkle/color";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { AssetData, AllData } from "../lib/types";
 
 const EXCHANGE_RATE_API_KEY = process.env.EXCHANGE_RATE_API_KEY; // 获取汇率
 
@@ -50,3 +51,28 @@ export const getExchangeRate = async () => {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+// 通用的获取金额数组的方法
+export const getAmounts = (data: AssetData[], key: string) => {
+  return data
+    .map((item) => item[key])
+    .filter((value) => typeof value === "number") as number[];
+};
+
+//计算1.3.5年的回报率
+export const getReturnrate = (data: AssetData[], range: number) => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const startYear = currentYear - (range - 1);
+  const start = data.find(
+    (item) => new Date(item.date) >= new Date(`${startYear}-01-01`)
+  );
+  const end = data
+    .slice()
+    .reverse()
+    .find((item) => new Date(item.date) <= new Date(`${currentYear}-12-31`));
+
+  const startAmount = Number(start?.amount ?? 0);
+  const endAmount = Number(end?.amount ?? 0);
+  return ((endAmount - startAmount) / startAmount) * 100;
+};

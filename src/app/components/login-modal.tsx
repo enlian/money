@@ -2,9 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "./../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 
 const LoginModal = () => {
@@ -47,11 +53,17 @@ const LoginModal = () => {
 
   return (
     <>
-    {!isAuthenticated && (
-        <Button className="text-white" onClick={() => setIsOpen(true)}>登录</Button>
+      {!isAuthenticated && (
+        <Button className="text-white" onClick={() => setIsOpen(true)}>
+          登录
+        </Button>
       )}
-      {isAuthenticated && <Button className="text-white" onClick={handleLogout}>退出</Button>}
-      
+      {isAuthenticated && (
+        <Button className="text-white" onClick={handleLogout}>
+          退出
+        </Button>
+      )}
+
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
@@ -59,7 +71,9 @@ const LoginModal = () => {
           </DialogHeader>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium">用户名</label>
+              <label htmlFor="username" className="block text-sm font-medium">
+                用户名
+              </label>
               <input
                 type="text"
                 id="username"
@@ -70,7 +84,9 @@ const LoginModal = () => {
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium">密码</label>
+              <label htmlFor="password" className="block text-sm font-medium">
+                密码
+              </label>
               <input
                 type="password"
                 id="password"
@@ -82,7 +98,9 @@ const LoginModal = () => {
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <DialogFooter>
-              <Button className="text-white" type="submit">登录</Button>
+              <Button className="text-white" type="submit">
+                登录
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
