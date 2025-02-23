@@ -47,8 +47,8 @@ const AssetsPage = () => {
   return (
     <div className="flex flex-col gap-4 p-6 bg-gray-50 h-full max-w-3xl">
       <div className="flex justify-end gap-3">
-        <LoginModal />
         <AddAmountModal onSuccess={refetch} />
+        <LoginModal />
       </div>
 
       <Header data={data} rate={data.exchangeRate} />
