@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-// 假设这是你的用户数据
+// 管理员
 const admin = {
   id: 1,
   username: process.env.ADMIN_USER,
-  passwordHash: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10)
+  passwordHash: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
 };
 
 // JWT 密钥

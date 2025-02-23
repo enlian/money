@@ -24,7 +24,7 @@ const fetchAssets = async (token: string | null, isAuthenticated: boolean) => {
   return response.json();
 };
 
-const AssetsPage = () => {
+const Page = () => {
   const { isAuthenticated, isAuthenticating, token } = useAuth();
 
   // 使用 react-query 进行数据请求
@@ -57,4 +57,4 @@ const AssetsPage = () => {
   );
 };
 
-export default AssetsPage;
+export default Page;

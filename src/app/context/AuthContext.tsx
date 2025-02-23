@@ -1,12 +1,13 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+import { createContext, useContext, useState, ReactNode } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
   token: string | null;
   setToken: (token: string | null) => void;
-  isAuthenticated: boolean; // 表示认证状态
-  isAuthenticating: boolean; // 用于鉴权中的加载状态
-  verifyToken: () => Promise<void>;
+  isAuthenticated: boolean;
+  isAuthenticating: boolean;
   logout: () => void;
 }
 
@@ -15,74 +16,62 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // 初始为 false，但会在验证后更新
-  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(true); // 用于鉴权中的加载状态
+  const queryClient = useQueryClient();
+  const [token, setToken] = useState<string | null>(() => {
+    return typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  });
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-      verifyToken(storedToken);
-    } else {
-      setIsAuthenticating(false); // 没有 token，直接结束鉴权状态
-    }
-  }, []);
-
-  const verifyToken = async (token: string | null = null) => {
-    const currentToken = token || localStorage.getItem("token");
-    if (!currentToken) {
-      setIsAuthenticated(false); // 没有 token，表示用户未认证
-      setIsAuthenticating(false);
-      return;
-    }
-
-    try {
+  // 使用 React Query 进行 token 验证
+  const { data, isLoading } = useQuery({
+    queryKey: ["validateToken", token],
+    queryFn: async () => {
+      if (!token) throw new Error("No token provided");
       const response = await fetch("/api/validate-token", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: currentToken }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
       });
+      if (!response.ok) throw new Error("Token validation failed");
+      return response.json();
+    },
+    enabled: !!token, // 只有 token 存在时才请求
+    retry: 1, // 失败时最多重试 1 次
+    staleTime: 1000 * 60 * 5, // 5 分钟内不会重新请求
+  });
 
-      const result = await response.json();
-      if (result.valid) {
-        setIsAuthenticated(true); // 认证成功
-      } else {
-        localStorage.removeItem("token");
-        setIsAuthenticated(false); // 认证失败
-        setToken(null);
-      }
-    } catch (error) {
-      localStorage.removeItem("token");
-      setIsAuthenticated(false); // 发生错误时也视为未认证
-      setToken(null);
-    } finally {
-      setIsAuthenticating(false); // 结束鉴权状态
-    }
-  };
+  // 处理登录
+  const loginMutation = useMutation({
+    mutationFn: async (newToken: string) => {
+      localStorage.setItem("token", newToken);
+      setToken(newToken);
+      queryClient.invalidateQueries({ queryKey: ["validateToken"] }); // 重新验证 token
+    },
+  });
 
+  // 处理退出
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
-    setIsAuthenticated(false);
+    queryClient.clear(); // 清除所有缓存
   };
 
   return (
     <AuthContext.Provider
       value={{
         token,
-        setToken,
-        isAuthenticated,
-        isAuthenticating, // 用于鉴权中的加载状态
-        verifyToken,
+        setToken: (newToken) => {
+          if (newToken !== null) {
+            loginMutation.mutate(newToken);
+          }
+        },
+        isAuthenticated: !!data?.valid,
+        isAuthenticating: isLoading,
         logout,
       }}
     >
