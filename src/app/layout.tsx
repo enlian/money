@@ -1,6 +1,6 @@
-import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
-import { QueryProvider } from "./providers/QueryProvider"; // 引入 Client Component
+import "./globals.css";
+import { QueryProvider } from "./providers/QueryProvider";
 
 export const metadata = {
   title: "我的资产统计",

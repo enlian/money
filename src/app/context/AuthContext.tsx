@@ -1,7 +1,13 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface AuthContextType {
   token: string | null;
@@ -24,10 +30,23 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(() => {
-    return typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    // ✅ 只能在客户端访问 localStorage
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("token");
+    }
+    return null;
   });
 
-  // 使用 React Query 进行 token 验证
+  // ✅ 监听 token 变化，确保持久化
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
+
+  // ✅ 使用 React Query 进行 token 验证
   const { data, isLoading } = useQuery({
     queryKey: ["validateToken", token],
     queryFn: async () => {
@@ -37,28 +56,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
-      if (!response.ok) throw new Error("Token validation failed");
+      if (!response.ok) return { valid: false }; // ✅ 避免错误时影响状态
       return response.json();
     },
-    enabled: !!token, // 只有 token 存在时才请求
-    retry: 1, // 失败时最多重试 1 次
-    staleTime: 1000 * 60 * 5, // 5 分钟内不会重新请求
+    enabled: !!token,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
   });
 
-  // 处理登录
+  // ✅ 处理登录
   const loginMutation = useMutation({
     mutationFn: async (newToken: string) => {
-      localStorage.setItem("token", newToken);
       setToken(newToken);
-      queryClient.invalidateQueries({ queryKey: ["validateToken"] }); // 重新验证 token
+      queryClient.invalidateQueries({ queryKey: ["validateToken"] });
     },
   });
 
-  // 处理退出
+  // ✅ 处理退出
   const logout = () => {
-    localStorage.removeItem("token");
     setToken(null);
-    queryClient.clear(); // 清除所有缓存
+    queryClient.removeQueries({ queryKey: ["validateToken"] });
   };
 
   return (
@@ -70,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             loginMutation.mutate(newToken);
           }
         },
-        isAuthenticated: !!data?.valid,
+        isAuthenticated: Boolean(data?.valid),
         isAuthenticating: isLoading,
         logout,
       }}

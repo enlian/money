@@ -1,6 +1,7 @@
-import { query } from "./../../lib/db";
-import yahooFinance from "yahoo-finance2"; // 使用 yahoo-finance2 库
 import jwt from "jsonwebtoken";
+import yahooFinance from "yahoo-finance2"; // 使用 yahoo-finance2 库
+import { getVisitorData } from "./../../lib/api-utils";
+import { query } from "./../../lib/db";
 import { getExchangeRate } from "./../../lib/utils";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -23,7 +24,11 @@ export async function POST(req) {
     let result;
 
     if (!token) {
-      return NextResponse.json({ valid: false }, { status: 400 });
+      const visitorData = await getVisitorData();
+
+      return new Response(JSON.stringify(visitorData), {
+        status: 200,
+      });
     }
 
     // 验证 token
@@ -36,7 +41,7 @@ export async function POST(req) {
       ORDER BY date ASC
     `);
     } else {
-      return NextResponse.json({ valid: false }, { status: 401 });
+      return NextResponse.json({ error: "认证失败" }, { status: 401 });
     }
 
     const earliestDate = result.rows[0]?.date; // 使用资产数据的最早日期
@@ -81,7 +86,7 @@ export async function POST(req) {
       nasdaq: formatTimestamps(nasdaqData.quotes),
       bitcoin: formatTimestamps(btcData.quotes),
       ethereum: formatTimestamps(ethData.quotes),
-      exchangeRate: exchangeRate
+      exchangeRate: exchangeRate,
     };
 
     return new Response(JSON.stringify(responseData), {
@@ -95,9 +100,8 @@ export async function POST(req) {
       },
     });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: "获取数据失败: " + error.message }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: "获取数据失败" }), {
+      status: 500,
+    });
   }
 }

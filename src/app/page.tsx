@@ -1,26 +1,21 @@
 "use client";
 
+import Spinner from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import "chart.js/auto";
-import LoginModal from "./components/login-modal";
 import AddAmountModal from "./components/add-amount-modal";
-import { useAuth } from "./context/AuthContext";
-import Header from "./components/header-info";
-import Spinner from "@/components/ui/spinner";
 import Charts from "./components/charts";
-import type { AllData } from "./lib/types";
 import Error from "./components/error";
+import Header from "./components/header-info";
+import LoginModal from "./components/login-modal";
+import { useAuth } from "./context/AuthContext";
+import type { AllData } from "./lib/types";
 
-const fetchAssets = async (token: string | null, isAuthenticated: boolean) => {
-  const endpoint = isAuthenticated ? "/api/assets" : "/api/visitor-assets";
-  const options = isAuthenticated
-    ? {
-        method: "POST",
-        body: JSON.stringify({ token }),
-      }
-    : undefined;
-
-  const response = await fetch(endpoint, options);
+const fetchAssets = async (token: string | null) => {
+  const response = await fetch("/api/assets", {
+    method: "POST",
+    body: JSON.stringify({ token }),
+  });
   return response.json();
 };
 
@@ -30,7 +25,7 @@ const Page = () => {
   // 使用 react-query 进行数据请求
   const { data, error, isLoading, refetch } = useQuery<AllData>({
     queryKey: ["assets", isAuthenticated, token], // 缓存键
-    queryFn: () => fetchAssets(token, isAuthenticated),
+    queryFn: () => fetchAssets(token),
     enabled: !isAuthenticating, // 只有在认证完成后才请求数据
     staleTime: 1000 * 60 * 5, // 5分钟内不重新获取数据
     retry: 2, // 失败时自动重试 2 次
@@ -40,7 +35,7 @@ const Page = () => {
     return <Error errorMessage={error.message} fetchData={refetch} />;
   }
 
-  if (isLoading || !data?.assets.length) {
+  if (isLoading || !data?.assets?.length) {
     return <Spinner />;
   }
 
