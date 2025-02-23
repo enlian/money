@@ -7,7 +7,6 @@ import AddAmountModal from "./components/add-amount-modal";
 import { useAuth } from "./context/AuthContext";
 import Header from "./components/header-info";
 import Spinner from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import Charts from "./components/charts";
 import type { AllData } from "./lib/types";
 import Error from "./components/error";
