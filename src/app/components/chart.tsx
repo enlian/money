@@ -23,7 +23,6 @@ export default function Chart({ data }: ChartProps) {
     datasets: [],
   });
 
-  // ✅ 使用 `useMemo` 计算 `labels` 和 `amounts`
   const labels = useMemo(() => {
     return (
       data?.assets.map((item: { date: string }) =>
@@ -36,7 +35,6 @@ export default function Chart({ data }: ChartProps) {
     return data ? getAmounts(data.assets, "amount") : [];
   }, [data]);
 
-  // ✅ 使用 `useEffect` 更新 `barChartData`
   useEffect(() => {
     if (!data) return;
 
@@ -88,7 +86,6 @@ export default function Chart({ data }: ChartProps) {
     });
   }, [data]);
 
-  // ✅ 使用 `useEffect` 更新 `assetsChartData`
   useEffect(() => {
     if (!data) return;
 
