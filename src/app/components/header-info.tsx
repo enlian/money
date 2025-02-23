@@ -53,15 +53,12 @@ const Header = React.memo(({ data, rate }: Props) => {
 
   return (
     <div className="p-4 bg-white shadow-sm rounded-lg">
-      <p className="text-gray-700">
-        {latestDate} - {latest ? (latest / 10000).toFixed(2) + "万" : ""}{" "}
-        {latest && rate
-          ? `/ ${(latest / rate / 10000).toFixed(2)}万 (美元${rate})`
-          : ""}
-      </p>
-
-      <p className="text-gray-600">
-        最高 {highPoint ? (highPoint / 10000).toFixed(2) + "万" : ""}{" "}
+      <p className="text-gray-700 text-sm">
+        {latestDate} - {latest && (latest / 10000).toFixed(2) + "万 "}
+        {latest &&
+          rate &&
+          `/ ${(latest / rate / 10000).toFixed(2)}万 (美元${rate}) `}
+        / 最高 {highPoint && (highPoint / 10000).toFixed(2) + "万 "}/{" "}
         <span className="text-red-900">-{drawdown}%</span>
       </p>
     </div>

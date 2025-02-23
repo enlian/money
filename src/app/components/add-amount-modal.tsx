@@ -50,11 +50,7 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
 
   return (
     <>
-      {isAuthenticated && (
-        <Button className="text-white" onClick={() => setIsOpen(true)}>
-          添加
-        </Button>
-      )}
+      {isAuthenticated && <Button onClick={() => setIsOpen(true)}>添加</Button>}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>

@@ -8,8 +8,9 @@ import { useAuth } from "./context/AuthContext";
 import Header from "./components/header-info";
 import Spinner from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import Chart from "./components/chart";
+import Charts from "./components/charts";
 import type { AllData } from "./lib/types";
+import Error from "./components/error";
 
 const AssetsPage = () => {
   const [data, setData] = useState<AllData | null>(null);
@@ -35,43 +36,33 @@ const AssetsPage = () => {
       setData(data);
       setRate(data.exchangeRate); //设置汇率
     } catch (error) {
-      setErrorMessage("无法获取数据，请稍后重试: " + error);
+      setErrorMessage("无法获取数据，请稍后重试");
     }
   };
 
   useEffect(() => {
-    // 动态导入 zoomPlugin 只在客户端加载
-    // import("chartjs-plugin-zoom").then((zoomPlugin) => {
-    //   Chart.register(zoomPlugin.default);
-    // });
-
     if (!isAuthenticating) {
       fetchData(); // 仅在 `isAuthenticating` 为 false 时发起请求
     }
   }, [isAuthenticated, isAuthenticating]);
 
   if (errorMessage) {
-    return (
-      <>
-        <p>{errorMessage}</p>
-        <Button onClick={fetchData}>重试</Button>
-      </>
-    );
+    return <Error errorMessage={errorMessage} fetchData={fetchData} />;
   }
 
-  // if (!data.assets.length) {
-  //   return <Spinner />;
-  // }
+  if (!data?.assets.length) {
+    return <Spinner />;
+  }
 
   return (
     <div className="flex flex-col gap-4 p-6 bg-gray-50 h-full">
-      <div className="flex justify-end gap-4">
+      <div className="flex justify-end gap-3">
         <LoginModal />
         <AddAmountModal onSuccess={fetchData} />
       </div>
 
       <Header data={data} rate={rate ?? 0} />
-      <Chart data={data} />
+      <Charts data={data} />
     </div>
   );
 };

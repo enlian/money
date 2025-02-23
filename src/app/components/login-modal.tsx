@@ -54,15 +54,9 @@ const LoginModal = () => {
   return (
     <>
       {!isAuthenticated && (
-        <Button className="text-white" onClick={() => setIsOpen(true)}>
-          登录
-        </Button>
+        <Button onClick={() => setIsOpen(true)}>登录</Button>
       )}
-      {isAuthenticated && (
-        <Button className="text-white" onClick={handleLogout}>
-          退出
-        </Button>
-      )}
+      {isAuthenticated && <Button onClick={handleLogout}>退出</Button>}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Chart, Line, Bar } from "react-chartjs-2";
 import {
   CHART_COLORS,
   transparentize,
@@ -7,14 +7,14 @@ import {
   getAmounts,
 } from "../lib/utils";
 import moment from "moment";
-import { TooltipItem } from "chart.js";
-import type { ChartData, AssetData, AllData } from "../lib/types";
+import { TooltipItem, Chart as ChartJS, registerables } from "chart.js";
+import type { ChartData, AllData } from "../lib/types";
 
 interface ChartProps {
   data: AllData | null;
 }
 
-export default function Chart({ data }: ChartProps) {
+export default function Charts({ data }: ChartProps) {
   const [assetsChartData, setAssetsChartData] = useState<ChartData | null>(
     null
   );
@@ -37,7 +37,10 @@ export default function Chart({ data }: ChartProps) {
 
   useEffect(() => {
     if (!data) return;
-
+    // 动态导入 zoomPlugin 只在客户端加载
+    import("chartjs-plugin-zoom").then((zoomPlugin) => {
+      ChartJS.register(...registerables, zoomPlugin.default);
+    });
     setBarChartData({
       labels: ["今年", "3年", "5年"],
       datasets: [
