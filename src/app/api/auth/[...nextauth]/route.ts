@@ -21,7 +21,7 @@ export const authOptions = {
           credentials.username === storedUser &&
           credentials.password === storedPassword
         ) {
-          return { id: "1", username: storedUser, role: "admin" };
+          return { id: "1", name: storedUser, role: "admin" };
         }
 
         throw new Error("用户名或密码错误");

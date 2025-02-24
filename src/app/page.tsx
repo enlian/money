@@ -22,7 +22,7 @@ const Page = () => {
   const { data: session, status } = useSession();
 
   const { data, error, isLoading, refetch } = useQuery<AllData>({
-    queryKey: ["assets", session], // 缓存键
+    queryKey: ["assets", session?.user?.name], // 缓存键
     queryFn: fetchAssets,
     //enabled: status === "authenticated", // 只有在认证完成后才请求数据
     staleTime: 1000 * 60 * 5, // 5分钟内不重新获取数据
