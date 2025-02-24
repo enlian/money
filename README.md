@@ -9,7 +9,7 @@
 ## **功能特点**
 
 - **个人资产的添加、更新与追踪**：用户可以记录特定时间的资产数据，并随时更新。
-- **用户认证与授权**：采用 **JWT 令牌** 进行用户认证，确保只有已登录用户可以查看和管理自己的资产数据，访客则只能浏览示例数据。
+- **用户认证与授权**：采用 **NextAuth** 进行用户认证，确保只有已登录用户可以查看和管理自己的资产数据，访客则只能浏览示例数据。
 - **资产数据可视化**：利用 **Chart.js** 绘制资产走势，提供直观的数据分析。
 - **实时数据更新**：资产记录的添加和更新会实时反映在图表中。
 - **数据缩放与平移**：用户可以在图表上缩放和拖动，以查看不同时间段的资产变化。
@@ -33,7 +33,7 @@
 - **Material-UI**：实现 Material Design 风格的 UI 组件库。
 - **Chart.js**：用于绘制资产走势的可视化图表。
 - **PostgreSQL**：强大的开源关系型数据库，存储用户资产数据。
-- **JWT（JSON Web Tokens）**：用于用户身份验证与安全管理。
+- **NextAuth**：用于用户身份验证与安全管理。
 - **React Query**：高效的数据获取和状态管理方案，优化 API 请求。
 - **Zod**：数据验证库，确保输入数据格式正确。
 - **Vercel**：用于前端托管和部署 Next.js 应用。
@@ -85,9 +85,10 @@ POSTGRES_HOST=your_db_host
 POSTGRES_PORT=your_db_port
 POSTGRES_DATABASE=your_db_name
 
-JWT_SECRET=your_jwt_secret    # JWT 令牌签名密钥
-ADMIN_USER=your_admin_username  # 管理员账号
-ADMIN_PASSWORD=your_admin_password  # 管理员密码
+NEXTAUTH_SECRET=your_jwt_secret    # NextAuth签名密钥
+NEXTAUTH_URL="http://localhost:3000"
+USER_NAME=your_username  # 管理员账号
+USER_PASSWORD=your_password  # 管理员密码
 ```
 
 ### **4. 设置数据库**
