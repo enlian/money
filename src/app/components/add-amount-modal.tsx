@@ -1,33 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "../context/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface AddAmountModalProps {
   onSuccess: () => void;
 }
 
-const addAmount = async ({
-  amount,
-  token,
-}: {
-  amount: string;
-  token: string;
-}) => {
+const addAmount = async ({ amount }: { amount: string }) => {
   const response = await fetch("/api/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount, token }),
+    body: JSON.stringify({ amount }),
   });
 
   const data = await response.json();
@@ -40,7 +34,7 @@ const addAmount = async ({
 const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
   const [amount, setAmount] = useState<number | string | "">("");
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, token } = useAuth();
+  const { data: session } = useSession();
 
   // 处理金额提交
   const addMutation = useMutation({
@@ -65,17 +59,17 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
       return;
     }
 
-    if (!token) {
+    if (!session) {
       toast.error("用户未登录");
       return;
     }
 
-    addMutation.mutate({ amount: sanitizedAmount, token });
+    addMutation.mutate({ amount: sanitizedAmount });
   };
 
   return (
     <>
-      {isAuthenticated && <Button onClick={() => setIsOpen(true)}>添加</Button>}
+      {session && <Button onClick={() => setIsOpen(true)}>添加</Button>}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="w-80">
           <DialogHeader>

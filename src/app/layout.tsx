@@ -1,6 +1,6 @@
-import { AuthProvider } from "./context/AuthContext";
 import "./globals.css";
 import { QueryProvider } from "./providers/QueryProvider";
+import SessionProvider from "./providers/SessionProvider";
 
 export const metadata = {
   title: "我的资产统计",
@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex justify-center h-screen">
         <QueryProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <SessionProvider> {children}</SessionProvider>
         </QueryProvider>
       </body>
     </html>

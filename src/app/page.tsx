@@ -3,40 +3,43 @@
 import Spinner from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import "chart.js/auto";
+import { useSession } from "next-auth/react";
 import AddAmountModal from "./components/add-amount-modal";
 import Charts from "./components/charts";
 import Error from "./components/error";
 import Header from "./components/header-info";
 import LoginModal from "./components/login-modal";
-import { useAuth } from "./context/AuthContext";
 import type { AllData } from "./lib/types";
 
-const fetchAssets = async (token: string | null) => {
+const fetchAssets = async () => {
   const response = await fetch("/api/assets", {
     method: "POST",
-    body: JSON.stringify({ token }),
   });
   return response.json();
 };
 
 const Page = () => {
-  const { isAuthenticated, isAuthenticating, token } = useAuth();
+  const { data: session, status } = useSession();
 
-  // 使用 react-query 进行数据请求
   const { data, error, isLoading, refetch } = useQuery<AllData>({
-    queryKey: ["assets", isAuthenticated, token], // 缓存键
-    queryFn: () => fetchAssets(token),
-    enabled: !isAuthenticating, // 只有在认证完成后才请求数据
+    queryKey: ["assets", session], // 缓存键
+    queryFn: fetchAssets,
+    //enabled: status === "authenticated", // 只有在认证完成后才请求数据
     staleTime: 1000 * 60 * 5, // 5分钟内不重新获取数据
     retry: 2, // 失败时自动重试 2 次
   });
 
-  if (error) {
-    return <Error errorMessage={error.message} fetchData={refetch} />;
+  if (status === "loading" || isLoading) {
+    return <Spinner />;
   }
 
-  if (isLoading || !data?.assets?.length) {
-    return <Spinner />;
+  if (error || !data?.assets?.length) {
+    return (
+      <Error
+        errorMessage={error?.message || "暂无数据，请重试"}
+        fetchData={refetch}
+      />
+    );
   }
 
   return (

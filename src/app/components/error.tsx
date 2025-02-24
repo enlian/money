@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 
 interface ErrorProps {
@@ -8,7 +7,7 @@ interface ErrorProps {
 
 export default function Error({ errorMessage, fetchData }: ErrorProps) {
   return (
-    <div className="flex flex-col gap-4 p-6 bg-gray-50 min-h-screen justify-center items-center">
+    <div className="flex flex-col gap-4 p-6 bg-gray-50 min-h-screen justify-center items-center w-[450px]">
       <p>{errorMessage}</p>
       <Button onClick={fetchData}>重试</Button>
     </div>

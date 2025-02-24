@@ -1,16 +1,5 @@
 import yahooFinance from "yahoo-finance2";
-import { getExchangeRate } from "./utils";
-
-const formatTimestamps = (
-  dataArray: { date: Date; close: number | null }[]
-) => {
-  return dataArray.map((item) => {
-    return {
-      date: item.date, // 使用返回的数据中的日期
-      amount: item.close, // 收盘价作为金额
-    };
-  });
-};
+import { formatTimestamps, getExchangeRate } from "./utils";
 
 export async function getVisitorData() {
   // 统一设置日期范围为 2022 年底到当前最新日期

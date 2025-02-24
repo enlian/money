@@ -76,3 +76,14 @@ export const getReturnrate = (data: AssetData[], range: number) => {
   const endAmount = Number(end?.amount ?? 0);
   return ((endAmount - startAmount) / startAmount) * 100;
 };
+
+export const formatTimestamps = (
+  dataArray: { date: Date; close: number | null }[]
+) => {
+  return dataArray.map((item) => {
+    return {
+      date: item.date, // 使用返回的数据中的日期
+      amount: item.close, // 收盘价作为金额
+    };
+  });
+};

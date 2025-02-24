@@ -1,51 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "../context/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 import { toast } from "sonner";
-
-const loginUser = async ({
-  username,
-  password,
-}: {
-  username: string;
-  password: string;
-}) => {
-  const response = await fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "登录失败");
-  }
-
-  return data;
-};
 
 const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const { setToken, isAuthenticated, logout } = useAuth();
+  const { data: session } = useSession();
 
   // 处理登录
   const loginMutation = useMutation({
-    mutationFn: loginUser,
-    onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      setToken(data.token);
+    mutationFn: async () => {
+      const result = await signIn("credentials", {
+        redirect: false,
+        username,
+        password,
+      });
+      if (result?.error) {
+        throw new Error(result.error);
+      }
       setIsOpen(false);
       toast.success("登录成功");
     },
@@ -55,21 +39,17 @@ const LoginModal = () => {
   });
 
   // 处理登出
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      logout();
-    },
-    onSuccess: () => {
-      toast.success("已退出登录");
-    },
-  });
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("已退出登录");
+  };
 
   return (
     <>
-      {!isAuthenticated ? (
+      {!session ? (
         <Button onClick={() => setIsOpen(true)}>登录</Button>
       ) : (
-        <Button className="bg-gray-400" onClick={() => logoutMutation.mutate()}>
+        <Button className="bg-gray-400" onClick={handleLogout}>
           退出
         </Button>
       )}
@@ -82,7 +62,7 @@ const LoginModal = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              loginMutation.mutate({ username, password });
+              loginMutation.mutate();
             }}
             className="space-y-4 mt-3"
           >
