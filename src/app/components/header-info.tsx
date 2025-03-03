@@ -54,7 +54,10 @@ const HeaderInfo = React.memo(({ data, rate }: Props) => {
   return (
     <div className="p-4 bg-white shadow-sm rounded-lg">
       <p className="text-gray-700 text-sm">
-        {latestDate} {latest && (latest / 10000).toFixed(2) + "万 "}
+        <span className="text-gray-600">{latestDate}</span>{" "}
+        <span className="font-bold">
+          {latest && (latest / 10000).toFixed(2) + "万 "}
+        </span>
         {latest &&
           rate &&
           `/ ${(latest / rate / 10000).toFixed(2)}万 (美元${rate}) `}
