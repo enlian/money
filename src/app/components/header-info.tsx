@@ -11,7 +11,7 @@ interface Props {
 /**
  * @page 最新、高点和当前回撤
  */
-const Header = React.memo(({ data, rate }: Props) => {
+const HeaderInfo = React.memo(({ data, rate }: Props) => {
   const [latest, setLatest] = useState<number | null>(null);
   const [highPoint, setHighPoint] = useState<number | null>(null);
   const [drawdown, setDrawdown] = useState<number | null>(null);
@@ -54,7 +54,7 @@ const Header = React.memo(({ data, rate }: Props) => {
   return (
     <div className="p-4 bg-white shadow-sm rounded-lg">
       <p className="text-gray-700 text-sm">
-        {latestDate} - {latest && (latest / 10000).toFixed(2) + "万 "}
+        {latestDate} {latest && (latest / 10000).toFixed(2) + "万 "}
         {latest &&
           rate &&
           `/ ${(latest / rate / 10000).toFixed(2)}万 (美元${rate}) `}
@@ -65,4 +65,4 @@ const Header = React.memo(({ data, rate }: Props) => {
   );
 });
 
-export default Header;
+export default HeaderInfo;

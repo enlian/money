@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import AddAmountModal from "./components/add-amount-modal";
 import Charts from "./components/charts";
 import Error from "./components/error";
-import Header from "./components/header-info";
+import HeaderInfo from "./components/header-info";
 import LoginModal from "./components/login-modal";
 import type { AllData } from "./lib/types";
 
@@ -49,7 +49,7 @@ const Page = () => {
         <LoginModal />
       </div>
 
-      <Header data={data} rate={data.exchangeRate} />
+      <HeaderInfo data={data} rate={data.exchangeRate} />
       <Charts data={data} />
     </div>
   );
