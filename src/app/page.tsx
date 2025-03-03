@@ -43,7 +43,7 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-6 bg-gray-50 h-full max-w-3xl">
+    <div className="flex flex-col gap-4 p-6 bg-gray-50 h-full w-[500px]">
       <div className="flex justify-end gap-3">
         <AddAmountModal onSuccess={refetch} />
         <LoginModal />
