@@ -99,7 +99,7 @@ export default function Charts({ data }: ChartProps) {
         {
           label: "资产金额 (元)",
           data: amounts,
-          borderColor: transparentize(CHART_COLORS.blue, 0.1),
+          borderColor: transparentize(CHART_COLORS.blue, 0),
           backgroundColor: transparentize(CHART_COLORS.blue, 0.3),
           fill: true,
           spanGaps: true,
