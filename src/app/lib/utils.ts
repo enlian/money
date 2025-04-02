@@ -61,20 +61,29 @@ export const getAmounts = (data: AssetData[], key: string) => {
 
 //计算1.3.5年的回报率
 export const getReturnrate = (data: AssetData[], range: number) => {
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const startYear = currentYear - (range - 1);
-  const start = data.find(
-    (item) => new Date(item.date) >= new Date(`${startYear}-01-01`)
-  );
-  const end = data
-    .slice()
-    .reverse()
-    .find((item) => new Date(item.date) <= new Date(`${currentYear}-12-31`));
+  const now = new Date();
+  let startDate: Date;
 
-  const startAmount = Number(start?.amount ?? 0);
-  const endAmount = Number(end?.amount ?? 0);
-  return ((endAmount - startAmount) / startAmount) * 100;
+  if (range === 1) {
+    startDate = new Date(now.getFullYear(), 0, 1); // 今年年初
+  } else {
+    startDate = new Date();
+    startDate.setFullYear(now.getFullYear() - range);
+  }
+
+  console.log("range", range);
+  console.log("startDate", startDate, "now", now);
+
+  const start = data.find((item) => new Date(item.date) >= startDate);
+  const end = [...data].reverse().find((item) => new Date(item.date) <= now);
+
+  if (!start || !end || !start.amount || !end.amount) return 0;
+
+  return (
+    (((end.amount as number) - (start.amount as number)) /
+      (start.amount as number)) *
+    100
+  );
 };
 
 export const formatTimestamps = (
