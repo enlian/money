@@ -61,14 +61,12 @@ const HeaderInfo = React.memo(({ data, rate }: Props) => {
         {latest &&
           rate &&
           `/ ${(latest / rate / 10000).toFixed(2)}万 (美元${rate}) `}
-        / 最高 {highPoint && (highPoint / 10000).toFixed(2) + "万 "}
+        / 最高 {highPoint && (highPoint / 10000).toFixed(2) + "万("}-{drawdown}
+        %){" "}
         <span>
           {" "}
-          / 年化收益率 <b>
-            {getAnnualizedReturnRate(data?.assets || [])}
-          </b> /{" "}
+          / 年化 <b>{getAnnualizedReturnRate(data?.assets || [])}</b>
         </span>
-        <span className="text-red-900">距离高点-{drawdown}%</span>
       </p>
     </div>
   );
