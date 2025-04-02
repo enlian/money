@@ -36,6 +36,32 @@ export const CHART_COLORS = {
   grey: "rgb(201, 203, 207)",
 };
 
+// 计算平均年化收益率（Compound Annual Growth Rate）
+export const getAnnualizedReturnRate = (data: AssetData[]) => {
+  if (data.length < 2) return 0;
+
+  const sorted = [...data].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  const start = sorted[0];
+  const end = sorted[sorted.length - 1];
+
+  if (start.amount == null || end.amount == null) return 0;
+
+  const startAmount = start.amount as number;
+  const endAmount = end.amount as number;
+
+  const startDate = new Date(start.date);
+  const endDate = new Date(end.date);
+
+  const years =
+    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+  if (years <= 0) return 0;
+
+  const cagr = Math.pow(endAmount / startAmount, 1 / years) - 1;
+  return +(cagr * 100).toFixed(2) + "%"; // 转换为百分比格式
+};
+
 // 获取外部API的汇率数据
 export const getExchangeRate = async () => {
   //const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;

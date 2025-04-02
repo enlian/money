@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import type { AllData } from "../lib/types";
-import { getAmounts } from "../lib/utils";
+import { getAmounts, getAnnualizedReturnRate } from "../lib/utils";
 
 interface Props {
   data: AllData | null;
@@ -61,8 +61,14 @@ const HeaderInfo = React.memo(({ data, rate }: Props) => {
         {latest &&
           rate &&
           `/ ${(latest / rate / 10000).toFixed(2)}万 (美元${rate}) `}
-        / 最高 {highPoint && (highPoint / 10000).toFixed(2) + "万 "}/{" "}
-        <span className="text-red-900">-{drawdown}%</span>
+        / 最高 {highPoint && (highPoint / 10000).toFixed(2) + "万 "}
+        <span>
+          {" "}
+          / 年化收益率 <b>
+            {getAnnualizedReturnRate(data?.assets || [])}
+          </b> /{" "}
+        </span>
+        <span className="text-red-900">距离高点-{drawdown}%</span>
       </p>
     </div>
   );
