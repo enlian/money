@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex justify-center h-screen">
+      <body className="justify-center h-screen max-w-6xl mx-auto">
         <QueryProvider>
           <SessionProvider> {children}</SessionProvider>
         </QueryProvider>
