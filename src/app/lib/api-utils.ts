@@ -15,14 +15,14 @@ export async function getVisitorData() {
   });
 
   // 获取标普500数据
-  const sp500Data = await yahooFinance.chart("SPY", {
+  const SPYData = await yahooFinance.chart("SPY", {
     period1: startDate,
     period2: endDate,
     interval: "1d", // 每日数据
   });
 
   // 获取纳斯达克数据
-  const nasdaqData = await yahooFinance.chart("QQQ", {
+  const QQQData = await yahooFinance.chart("QQQ", {
     period1: startDate,
     period2: endDate,
     interval: "1d", // 每日数据
@@ -45,8 +45,8 @@ export async function getVisitorData() {
   // 组合外部 API 数据
   const responseData = {
     assets: formatTimestamps(dowJonesData.quotes), // 道琼斯指数数据
-    sp500: formatTimestamps(sp500Data.quotes), // 标普500数据
-    nasdaq: formatTimestamps(nasdaqData.quotes), // 纳斯达克数据
+    SPY: formatTimestamps(SPYData.quotes), // 标普500数据
+    QQQ: formatTimestamps(QQQData.quotes), // 纳斯达克数据
     bitcoin: formatTimestamps(btcData.quotes), // 比特币数据
     ethereum: formatTimestamps(ethData.quotes), // 以太坊数据
     exchangeRate: exchangeRate,

@@ -28,13 +28,13 @@ export async function POST(req) {
       result.rows[result.rows.length - 1]?.date ||
       new Date().toISOString().split("T")[0];
 
-    const sp500Data = await yahooFinance.chart("SPY", {
+    const SPYData = await yahooFinance.chart("SPY", {
       period1: earliestDate,
       period2: latestDate,
       interval: "1d",
     });
 
-    const nasdaqData = await yahooFinance.chart("QQQ", {
+    const QQQData = await yahooFinance.chart("QQQ", {
       period1: earliestDate,
       period2: latestDate,
       interval: "1d",
@@ -56,8 +56,8 @@ export async function POST(req) {
 
     const responseData = {
       assets: result.rows,
-      sp500: formatTimestamps(sp500Data.quotes),
-      nasdaq: formatTimestamps(nasdaqData.quotes),
+      SPY: formatTimestamps(SPYData.quotes),
+      QQQ: formatTimestamps(QQQData.quotes),
       bitcoin: formatTimestamps(btcData.quotes),
       ethereum: formatTimestamps(ethData.quotes),
       exchangeRate: exchangeRate,

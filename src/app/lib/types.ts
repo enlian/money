@@ -1,7 +1,7 @@
 export interface AllData {
   assets: AssetData[];
-  sp500: AssetData[];
-  nasdaq: AssetData[];
+  SPY: AssetData[];
+  QQQ: AssetData[];
   bitcoin: AssetData[];
   exchangeRate: number | 7.25;
 }

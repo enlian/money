@@ -71,9 +71,6 @@ export const getReturnrate = (data: AssetData[], range: number) => {
     startDate.setFullYear(now.getFullYear() - range);
   }
 
-  console.log("range", range);
-  console.log("startDate", startDate, "now", now);
-
   const start = data.find((item) => new Date(item.date) >= startDate);
   const end = [...data].reverse().find((item) => new Date(item.date) <= now);
 
