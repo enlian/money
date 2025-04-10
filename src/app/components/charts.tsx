@@ -130,7 +130,7 @@ export default function Charts({ data }: ChartProps) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       zoomTo(activeZoom);
-    }, 100);
+    }, 50);
     return () => clearTimeout(timeout);
   }, [assetsChartData]);
 
@@ -259,7 +259,7 @@ export default function Charts({ data }: ChartProps) {
   return (
     <>
       <div className="h-[350px] mb-5 relative">
-        <div className="space-x-3 flex justify-end absolute right-0 top-5">
+        <div className="flex flex-wrap justify-end gap-2 sm:absolute sm:right-0 sm:top-5">
           {ZOOM_OPTIONS.map(({ label, key }) => (
             <Button
               key={key}
