@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Chart as ChartJS, registerables, TooltipItem } from "chart.js";
 import "chartjs-adapter-moment";
