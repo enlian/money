@@ -1,7 +1,6 @@
 "use client";
 
 import AddAmountModal from "@/components/add-amount-modal";
-import Charts from "@/components/charts";
 import Error from "@/components/error";
 import HeaderInfo from "@/components/header-info";
 import LoginModal from "@/components/login-modal";
@@ -9,7 +8,9 @@ import Spinner from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import "chart.js/auto";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import type { AllData } from "./lib/types";
+const Charts = dynamic(() => import("@/components/charts"), { ssr: false });
 
 const fetchAssets = async () => {
   const response = await fetch("/api/assets", {
