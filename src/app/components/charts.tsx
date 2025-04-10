@@ -129,7 +129,7 @@ export default function Charts({ data }: ChartProps) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      zoomTo("1y");
+      zoomTo(activeZoom);
     }, 100);
     return () => clearTimeout(timeout);
   }, [assetsChartData]);
