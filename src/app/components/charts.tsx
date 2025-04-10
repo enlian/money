@@ -22,7 +22,7 @@ interface ChartProps {
   data: AllData | null;
 }
 
-// 缩放按钮配置（封装 Map）
+// 缩放按钮配置
 const ZOOM_OPTIONS = [
   { label: "今年", key: "year" },
   { label: "近一年", key: "1y" },
@@ -137,20 +137,22 @@ export default function Charts({ data }: ChartProps) {
     if (!lineChartRef.current) return;
     const chart = lineChartRef.current;
 
-    if (key === "year") {
-      const start = moment().startOf("year");
-      const end = moment().endOf("year");
-      chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
-    } else if (["1y", "3y", "5y"].includes(key)) {
-      const years = parseInt(key[0]);
-      const start = moment().subtract(years, "year").startOf("day");
-      const end = moment().endOf("day");
-      chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
-    } else if (key === "all") {
-      chart.resetZoom();
-    }
-
     setActiveZoom(key);
+
+    setTimeout(() => {
+      if (key === "year") {
+        const start = moment().startOf("year");
+        const end = moment().endOf("year");
+        chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
+      } else if (["1y", "3y", "5y"].includes(key)) {
+        const years = parseInt(key[0]);
+        const start = moment().subtract(years, "year").startOf("day");
+        const end = moment().endOf("day");
+        chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
+      } else if (key === "all") {
+        chart.resetZoom();
+      }
+    }, 100);
   };
 
   const barChartOptions = {
