@@ -14,7 +14,7 @@ const config: Config = {
         background: "hsl(220, 14%, 96%)",
         foreground: "hsl(222, 47%, 11%)",
         primary: "hsl(203, 100%, 61%)",
-        secondary: "hsl(210, 40%, 96%)",
+        secondary: "hsl(203, 100%, 41%)",
         accent: "hsl(174, 70%, 60%)",
         destructive: "hsl(348, 100%, 61%)",
         muted: "hsl(215, 16%, 47%)",

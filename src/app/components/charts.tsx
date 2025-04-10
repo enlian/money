@@ -1,6 +1,11 @@
+import { Button } from "@/components/ui/button";
 import { Chart as ChartJS, registerables, TooltipItem } from "chart.js";
+import "chartjs-adapter-moment";
+import zoomPlugin from "chartjs-plugin-zoom";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import "moment/locale/zh-cn";
+
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import type { AllData, ChartData } from "../lib/types";
 import {
@@ -10,9 +15,23 @@ import {
   transparentize,
 } from "../lib/utils";
 
+moment.locale("zh-cn");
+ChartJS.register(...registerables, zoomPlugin);
+
 interface ChartProps {
   data: AllData | null;
 }
+
+// 缩放按钮配置（封装 Map）
+const ZOOM_OPTIONS = [
+  { label: "今年", key: "year" },
+  { label: "近一年", key: "1y" },
+  { label: "近三年", key: "3y" },
+  { label: "近五年", key: "5y" },
+  { label: "全部", key: "all" },
+] as const;
+
+type ZoomKey = (typeof ZOOM_OPTIONS)[number]["key"];
 
 export default function Charts({ data }: ChartProps) {
   const [assetsChartData, setAssetsChartData] = useState<ChartData | null>(
@@ -23,12 +42,11 @@ export default function Charts({ data }: ChartProps) {
     datasets: [],
   });
 
+  const [activeZoom, setActiveZoom] = useState<ZoomKey>("1y");
+  const lineChartRef = useRef<ChartJS<"line"> | null>(null);
+
   const labels = useMemo(() => {
-    return (
-      data?.assets.map((item: { date: string }) =>
-        moment(item.date).format("YY-MM-DD")
-      ) ?? []
-    );
+    return data?.assets.map((item: { date: string }) => item.date) ?? [];
   }, [data]);
 
   const amounts = useMemo(() => {
@@ -37,10 +55,7 @@ export default function Charts({ data }: ChartProps) {
 
   useEffect(() => {
     if (!data) return;
-    // 动态导入 zoomPlugin 只在客户端加载
-    import("chartjs-plugin-zoom").then((zoomPlugin) => {
-      ChartJS.register(...registerables, zoomPlugin.default);
-    });
+
     setBarChartData({
       labels: ["今年", "3年", "5年"],
       datasets: [
@@ -94,7 +109,7 @@ export default function Charts({ data }: ChartProps) {
     if (!data) return;
 
     setAssetsChartData({
-      labels: labels ?? [],
+      labels,
       datasets: [
         {
           label: "资产金额 (元)",
@@ -110,7 +125,34 @@ export default function Charts({ data }: ChartProps) {
     });
   }, [labels, amounts]);
 
-  // 投资回报率 bar 图选项
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      zoomTo("1y");
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [assetsChartData]);
+
+  // 通用缩放函数
+  const zoomTo = (key: ZoomKey) => {
+    if (!lineChartRef.current) return;
+    const chart = lineChartRef.current;
+
+    if (key === "year") {
+      const start = moment().startOf("year");
+      const end = moment().endOf("year");
+      chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
+    } else if (["1y", "3y", "5y"].includes(key)) {
+      const years = parseInt(key[0]);
+      const start = moment().subtract(years, "year").startOf("day");
+      const end = moment().endOf("day");
+      chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
+    } else if (key === "all") {
+      chart.resetZoom();
+    }
+
+    setActiveZoom(key);
+  };
+
   const barChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -131,12 +173,8 @@ export default function Charts({ data }: ChartProps) {
     scales: {
       y: {
         ticks: {
-          callback: function (value: number | string) {
-            if (typeof value === "number") {
-              return `${value}%`;
-            }
-            return value;
-          },
+          callback: (value: number | string) =>
+            typeof value === "number" ? `${value}%` : value,
         },
         title: {
           display: true,
@@ -152,8 +190,9 @@ export default function Charts({ data }: ChartProps) {
     },
   };
 
-  // 总资产走势图选项
   const assetsChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
     interaction: {
       mode: "index" as const,
       intersect: false,
@@ -181,12 +220,8 @@ export default function Charts({ data }: ChartProps) {
           mode: "x" as const,
         },
         zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true,
-          },
+          wheel: { enabled: true },
+          pinch: { enabled: true },
           mode: "x" as const,
         },
         limits: {
@@ -194,22 +229,24 @@ export default function Charts({ data }: ChartProps) {
         },
       },
     },
-    responsive: true,
-    maintainAspectRatio: false,
     scales: {
       x: {
+        type: "time" as const,
+        time: {
+          unit: "month" as const,
+          displayFormats: {
+            month: "YY/M/D",
+          },
+          tooltipFormat: "YYYY/MM/DD",
+        },
         ticks: {
           maxTicksLimit: 30,
         },
       },
       y: {
         ticks: {
-          callback: function (value: string | number) {
-            if (typeof value === "number") {
-              return value / 10000 + "万";
-            }
-            return value;
-          },
+          callback: (value: string | number) =>
+            typeof value === "number" ? value / 10000 + "万" : value,
         },
       },
     },
@@ -217,14 +254,29 @@ export default function Charts({ data }: ChartProps) {
 
   return (
     <>
-      <div className="h-[350px]">
-        <Bar data={barChartData} options={barChartOptions} />
+      <div className="h-[350px] mb-5 relative">
+        <div className="space-x-3 flex justify-end absolute right-0 top-5">
+          {ZOOM_OPTIONS.map(({ label, key }) => (
+            <Button
+              key={key}
+              onClick={() => zoomTo(key)}
+              variant={activeZoom === key ? "secondary" : "default"}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
+        {assetsChartData && (
+          <Line
+            ref={lineChartRef}
+            data={assetsChartData}
+            options={assetsChartOptions}
+          />
+        )}
       </div>
 
       <div className="h-[350px]">
-        {assetsChartData && (
-          <Line data={assetsChartData} options={assetsChartOptions} />
-        )}
+        <Bar data={barChartData} options={barChartOptions} />
       </div>
     </>
   );
