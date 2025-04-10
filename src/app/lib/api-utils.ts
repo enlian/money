@@ -47,8 +47,8 @@ export async function getVisitorData() {
     assets: formatTimestamps(dowJonesData.quotes), // 道琼斯指数数据
     SPY: formatTimestamps(SPYData.quotes), // 标普500数据
     QQQ: formatTimestamps(QQQData.quotes), // 纳斯达克数据
-    bitcoin: formatTimestamps(btcData.quotes), // 比特币数据
-    ethereum: formatTimestamps(ethData.quotes), // 以太坊数据
+    btc: formatTimestamps(btcData.quotes), // 比特币数据
+    eth: formatTimestamps(ethData.quotes), // 以太坊数据
     exchangeRate: exchangeRate,
   };
 

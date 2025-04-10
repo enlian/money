@@ -1,4 +1,3 @@
-// app/api/add-amount/route.ts
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -15,12 +14,12 @@ export async function POST(request: Request) {
     }
 
     const { amount } = await request.json();
-    const currentTimestamp = Math.floor(Date.now() / 1000); // 当前时间戳，单位为秒
-    const previousDay = currentTimestamp - 86399;
+    const today = new Date().toISOString().split("T")[0];
 
+    // 检查当天是否已有相同 amount 的数据
     const checkSameDate = await query(
-      "SELECT * FROM assets WHERE amount = $1 AND date >= $2",
-      [amount, previousDay]
+      "SELECT * FROM assets WHERE amount = $1 AND date = $2",
+      [amount, today]
     );
 
     if (checkSameDate.rows.length > 0) {
@@ -30,16 +29,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // 执行数据库插入
     await query("INSERT INTO assets (amount, date) VALUES ($1, $2)", [
       amount,
-      currentTimestamp,
+      today,
     ]);
 
     return NextResponse.json({
       message: "数据成功插入",
       amount,
-      date: currentTimestamp,
+      date: today,
     });
   } catch (error) {
     console.error("Database insert error:", error);

@@ -2,7 +2,7 @@ export interface AllData {
   assets: AssetData[];
   SPY: AssetData[];
   QQQ: AssetData[];
-  bitcoin: AssetData[];
+  btc: AssetData[];
   exchangeRate: number | 7.25;
 }
 

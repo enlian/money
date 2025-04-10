@@ -78,9 +78,9 @@ export default function Charts({ data }: ChartProps) {
         {
           label: "BTC",
           data: [
-            getReturnrate(data.bitcoin, 1),
-            getReturnrate(data.bitcoin, 3),
-            getReturnrate(data.bitcoin, 5),
+            getReturnrate(data.btc, 1),
+            getReturnrate(data.btc, 3),
+            getReturnrate(data.btc, 5),
           ],
           borderColor: CHART_COLORS.yellow,
           backgroundColor: transparentize(CHART_COLORS.yellow, 0.6),
