@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import "./globals.css";
 import { QueryProvider } from "./providers/QueryProvider";
 import SessionProvider from "./providers/SessionProvider";
@@ -18,6 +19,7 @@ export default function RootLayout({
         <QueryProvider>
           <SessionProvider> {children}</SessionProvider>
         </QueryProvider>
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

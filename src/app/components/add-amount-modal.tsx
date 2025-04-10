@@ -18,16 +18,15 @@ interface AddAmountModalProps {
 }
 
 const addAmount = async ({ amount }: { amount: string }) => {
-  const response = await fetch("/api/add", {
+  const res = await fetch("/api/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ amount }),
   });
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "插入失败，请重试");
-  }
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.message);
   return data;
 };
 
@@ -43,7 +42,7 @@ const AddAmountModal = ({ onSuccess }: AddAmountModalProps) => {
       setAmount("");
       setIsOpen(false);
       toast.success(data.message || "金额已成功插入");
-      onSuccess(); // 触发数据刷新
+      onSuccess();
     },
     onError: (error: any) => {
       toast.error(error.message || "插入失败，请重试");
