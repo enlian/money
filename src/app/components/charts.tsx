@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Chart as ChartJS, registerables, TooltipItem } from "chart.js";
 import "chartjs-adapter-moment";
 import zoomPlugin from "chartjs-plugin-zoom";
@@ -43,6 +44,7 @@ export default function Charts({ data }: ChartProps) {
     labels: [],
     datasets: [],
   });
+  const [assetsChartLoading, setAssetsChartLoading] = useState(false);
 
   const [activeZoom, setActiveZoom] = useState<ZoomKey>("1y");
   const lineChartRef = useRef<ChartJS<"line"> | null>(null);
@@ -128,33 +130,42 @@ export default function Charts({ data }: ChartProps) {
   }, [labels, amounts]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      zoomTo(activeZoom);
-    }, 50);
-    return () => clearTimeout(timeout);
+    zoomHandler(activeZoom);
   }, [assetsChartData]);
+
+  // 处理缩放按钮点击事件
+  const zoomHandler = (key: ZoomKey) => {
+    const chart = lineChartRef.current;
+    if (!chart) return;
+    setActiveZoom(key);
+    let count = 0;
+    const intervalId = setInterval(() => {
+      zoomTo(key);
+      count++;
+      if (count >= 3) {
+        clearInterval(intervalId);
+      }
+    }, 500);
+  };
 
   // 通用缩放函数
   const zoomTo = (key: ZoomKey) => {
-    if (!lineChartRef.current) return;
     const chart = lineChartRef.current;
+    if (!chart) return;
+    chart.update();
 
-    setActiveZoom(key);
-
-    setTimeout(() => {
-      if (key === "year") {
-        const start = moment().startOf("year");
-        const end = moment().endOf("year");
-        chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
-      } else if (["1y", "3y", "5y"].includes(key)) {
-        const years = parseInt(key[0]);
-        const start = moment().subtract(years, "year").startOf("day");
-        const end = moment().endOf("day");
-        chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
-      } else if (key === "all") {
-        chart.resetZoom();
-      }
-    }, 100);
+    if (key === "year") {
+      const start = moment().startOf("year");
+      const end = moment().endOf("year");
+      chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
+    } else if (["1y", "3y", "5y"].includes(key)) {
+      const years = parseInt(key[0]);
+      const start = moment().subtract(years, "year").startOf("day");
+      const end = moment().endOf("day");
+      chart.zoomScale("x", { min: start.valueOf(), max: end.valueOf() });
+    } else if (key === "all") {
+      chart.resetZoom();
+    }
   };
 
   const barChartOptions = {
@@ -263,19 +274,23 @@ export default function Charts({ data }: ChartProps) {
           {ZOOM_OPTIONS.map(({ label, key }) => (
             <Button
               key={key}
-              onClick={() => zoomTo(key)}
+              onClick={zoomHandler.bind(null, key)}
               variant={activeZoom === key ? "secondary" : "default"}
             >
               {label}
             </Button>
           ))}
         </div>
-        {assetsChartData && (
-          <Line
-            ref={lineChartRef}
-            data={assetsChartData}
-            options={assetsChartOptions}
-          />
+        {assetsChartLoading ? (
+          <Skeleton className="h-[300]" />
+        ) : (
+          assetsChartData && (
+            <Line
+              ref={lineChartRef}
+              data={assetsChartData}
+              options={assetsChartOptions}
+            />
+          )
         )}
       </div>
 
