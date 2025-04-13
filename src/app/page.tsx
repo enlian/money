@@ -1,5 +1,4 @@
 "use client";
-
 import AddAmountModal from "@/components/add-amount-modal";
 import Error from "@/components/error";
 import HeaderInfo from "@/components/header-info";
@@ -10,6 +9,7 @@ import "chart.js/auto";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import type { AllData } from "./lib/types";
+
 const Charts = dynamic(() => import("@/components/charts"), { ssr: false });
 
 const fetchAssets = async () => {

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -18,6 +19,8 @@ const LoginModal = () => {
   const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
+  const pathname = usePathname(); // 获取当前路径
 
   // 处理登录
   const loginMutation = useMutation({
@@ -49,9 +52,14 @@ const LoginModal = () => {
       {!session ? (
         <Button onClick={() => setIsOpen(true)}>登录</Button>
       ) : (
-        <Button className="bg-gray-400" onClick={handleLogout}>
-          退出
-        </Button>
+        <div className="flex gap-3">
+          {pathname !== "/history" && (
+            <Button onClick={() => router.push("/history")}>历史</Button>
+          )}
+          <Button className="bg-gray-400" onClick={handleLogout}>
+            退出
+          </Button>
+        </div>
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
