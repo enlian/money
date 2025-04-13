@@ -15,11 +15,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="justify-center h-screen max-w-6xl mx-auto">
-        <QueryProvider>
-          <SessionProvider> {children}</SessionProvider>
-        </QueryProvider>
-        <Toaster richColors position="top-center" />
+      <body>
+        <div className="md:w-[1024px] mx-auto  h-screen">
+          <QueryProvider>
+            <SessionProvider> {children}</SessionProvider>
+          </QueryProvider>
+          <Toaster richColors position="top-center" />
+        </div>
       </body>
     </html>
   );

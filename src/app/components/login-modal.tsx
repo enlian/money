@@ -63,7 +63,7 @@ const LoginModal = () => {
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-80">
+        <DialogContent className="w-[300px]">
           <DialogHeader>
             <DialogTitle>登录</DialogTitle>
           </DialogHeader>
