@@ -82,7 +82,7 @@ const Page = () => {
         <table className="min-w-full text-sm text-left">
           <thead className="bg-gray-100 border-b font-semibold">
             <tr>
-              <th className="px-4 py-2">date</th>
+              <th className="px-4 py-2">日期</th>
               <th className="px-4 py-2">纳斯达克</th>
               <th className="px-4 py-2">标普500</th>
               <th className="px-4 py-2">比特币</th>
