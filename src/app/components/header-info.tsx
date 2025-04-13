@@ -48,8 +48,7 @@ const HeaderInfo = React.memo(({ data, rate }: Props) => {
   return (
     <div className="p-4 bg-white shadow-sm rounded-lg">
       <p className="text-gray-700 text-sm">
-        <span className="text-gray-600">{latestFormattedDate}</span>{" "}
-        {latestWan && <b>{latestWan}万</b>}{" "}
+        {latestFormattedDate} {latestWan && <b>{latestWan}万</b>}{" "}
         {latestUsdWan && ` / ${latestUsdWan}万 (美元${rate})`}{" "}
         {maxWan && ` / 最高 ${maxWan}万(`}
         {drawdown != null && <b>-{drawdown}</b>}
