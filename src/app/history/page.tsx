@@ -28,6 +28,11 @@ const fetchAssets = async () => {
 const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
+
   const { data, error, isLoading, refetch } = useQuery<AssetRow[]>({
     queryKey: ["history", session?.user?.name],
     queryFn: fetchAssets,
