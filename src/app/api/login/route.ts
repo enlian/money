@@ -1,22 +1,28 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+// 环境变量类型保护
+const adminUsername = process.env.ADMIN_USER;
+const adminPassword = process.env.ADMIN_PASSWORD;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!adminUsername || !adminPassword || !JWT_SECRET) {
+  throw new Error("缺少必要的环境变量");
+}
 
 // 管理员
 const admin = {
   id: 1,
-  username: process.env.ADMIN_USER,
-  passwordHash: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
+  username: adminUsername,
+  passwordHash: bcrypt.hashSync(adminPassword, 10),
 };
 
-// JWT 密钥
-const JWT_SECRET = process.env.JWT_SECRET;
-
 // POST 请求处理器
-export async function POST(req) {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
-    const { username, password } = body;
+    const { username, password }: { username: string; password: string } = body;
 
     if (
       username === admin.username &&
@@ -25,7 +31,7 @@ export async function POST(req) {
       // 生成JWT
       const token = jwt.sign(
         { userId: admin.id, username: admin.username },
-        JWT_SECRET,
+        JWT_SECRET as string,
         { expiresIn: "30d" }
       );
       // 返回token
