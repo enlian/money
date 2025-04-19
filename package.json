@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-chartjs-postgres-assets",
-  "version": "0.1.0",
+  "name": "my-asset-tracker",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "concurrently \"next dev\" \"start http://localhost:3000\"",
