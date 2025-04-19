@@ -42,10 +42,7 @@
 
 ## **项目截图**
 
-<img src="./screenshot/6.png" width="400"/><br/>
-<img src="./screenshot/1.png" width="400"/><br/>
-<img src="./screenshot/2.png" width="400"/><br/>
-<img src="./screenshot/4.png" width="400"/><br/>
+<img src="./screenshot/1.png" width="400"/>
 
 ---
 
