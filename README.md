@@ -2,7 +2,7 @@
 
 本项目是一个 Web 应用，允许用户随时间追踪自己的个人资产。用户可以记录资产数据，应用会通过图表显示资产的变化趋势，并将其与 **NASDAQ、S&P 500、比特币（BTC）、以太坊（ETH）等市场指数** 进行对比分析。
 
-**Demo:** <a href="https://nextjs-chartjs-postgres-assets.vercel.app">https://nextjs-chartjs-postgres-assets.vercel.app</a>
+**Demo:** <a href="https://my-asset-tracker.vercel.app/">https://my-asset-tracker.vercel.app/</a>
 
 ---
 
