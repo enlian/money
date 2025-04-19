@@ -28,7 +28,6 @@ export default function LoginPage() {
       className="flex flex-col gap-4 max-w-sm mx-auto mt-10"
     >
       <input
-        //type="email"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="User"
