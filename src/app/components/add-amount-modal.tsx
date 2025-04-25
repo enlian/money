@@ -34,7 +34,13 @@ const defaultRows: { amount: number; currency: "CNY" | "USD" }[] = [
   { amount: 0, currency: "CNY" },
 ];
 
-const AddAmountModal = ({ onSuccess }: { onSuccess: () => void }) => {
+const AddAmountModal = ({
+  onSuccess,
+  rate,
+}: {
+  onSuccess: () => void;
+  rate: number;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const [rows, setRows] =
@@ -77,8 +83,8 @@ const AddAmountModal = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const getTotalInCNY = () => {
     return rows.reduce((sum, row) => {
-      const rate = row.currency === "USD" ? 7 : 1; // Hardcoded USD to CNY conversion rate
-      return sum + row.amount * rate;
+      const currentRate = row.currency === "USD" ? rate : 1; // Hardcoded USD to CNY conversion rate
+      return sum + row.amount * currentRate;
     }, 0);
   };
 
