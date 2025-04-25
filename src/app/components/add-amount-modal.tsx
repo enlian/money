@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { toast } from "sonner";
 import { z } from "zod"; // 导入 zod
@@ -38,45 +38,51 @@ const AddAmountModal = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const [rows, setRows] = useState(defaultRows);
-  const [total, setTotal] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAmountChange = (index: number, value: string) => {
-    const updated = [...rows];
-    updated[index].amount = parseInt(value) || 0; // 只保留整数
-    setRows(updated);
-  };
+  // Generic handler for amount and currency change
+  const updateRow = useCallback(
+    (index: number, key: "amount" | "currency", value: any) => {
+      setRows((prevRows) => {
+        const updated = [...prevRows];
+        updated[index][key] =
+          key === "amount"
+            ? value && !isNaN(parseInt(value))
+              ? parseInt(value)
+              : 0
+            : value;
+        return updated;
+      });
+    },
+    []
+  );
 
-  const handleCurrencyChange = (index: number, currency: "CNY" | "USD") => {
-    const updated = [...rows];
-    updated[index].currency = currency;
-    setRows(updated);
-  };
+  const handleAmountChange = (index: number, value: string) =>
+    updateRow(index, "amount", value);
+  const handleCurrencyChange = (index: number, currency: "CNY" | "USD") =>
+    updateRow(index, "currency", currency);
 
   const handleRemoveRow = (index: number) => {
     if (rows.length <= 1) return;
-
-    const updated = [...rows];
-    updated.splice(index, 1);
-    setRows(updated);
+    setRows((prevRows) => prevRows.filter((_, i) => i !== index));
   };
 
   const handleAddRow = () => {
-    setRows([...rows, { amount: 0, currency: "CNY" }]);
+    setRows((prevRows) => [...prevRows, { amount: 0, currency: "CNY" }]);
   };
 
   const getTotalInCNY = () => {
     return rows.reduce((sum, row) => {
-      const rate = row.currency === "USD" ? 7 : 1;
+      const rate = row.currency === "USD" ? 7 : 1; // Hardcoded USD to CNY conversion rate
       return sum + row.amount * rate;
     }, 0);
   };
 
-  const addAmount = async ({ total }: { total: string }) => {
+  const addAmount = async ({ total }: { total: number }) => {
     const res = await fetch("/api/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ total }),
+      body: JSON.stringify({ amount: total }),
     });
 
     const data = await res.json();
@@ -86,28 +92,29 @@ const AddAmountModal = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   const addMutation = useMutation({
-    mutationFn: (total: number) => addAmount({ total: total.toString() }),
+    mutationFn: (total: number) => addAmount({ total }),
     onSuccess: (data) => {
-      setTotal(0);
       setIsOpen(false);
       toast.success(data.message || "金额已成功插入");
       onSuccess();
+      setIsSubmitting(false);
+      setRows(defaultRows);
     },
     onError: (error: any) => {
+      setIsSubmitting(false);
       toast.error(error.message || "插入失败，请重试");
     },
   });
 
   const handleSubmit = () => {
-    // 使用 zod 验证输入
     const validation = amountSchema.safeParse(rows);
     if (!validation.success) {
-      toast.error(validation.error.errors[0].message); // 直接显示第一个错误信息
+      toast.error(validation.error.errors[0].message);
       return;
     }
 
-    const sanitizedTotal = String(total).replace(/,/g, "");
-    if (sanitizedTotal === "" || isNaN(Number(sanitizedTotal))) {
+    const totalInCNY = getTotalInCNY();
+    if (totalInCNY === 0 || isNaN(totalInCNY)) {
       toast.error("请输入有效的金额");
       return;
     }
@@ -118,7 +125,7 @@ const AddAmountModal = ({ onSuccess }: { onSuccess: () => void }) => {
     }
 
     setIsSubmitting(true);
-    addMutation.mutate(total);
+    addMutation.mutate(totalInCNY);
   };
 
   return (
