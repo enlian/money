@@ -26,7 +26,7 @@ const amountSchema = z.array(
   })
 );
 
-const defaultRows = [
+const defaultRows: { amount: number; currency: "CNY" | "USD" }[] = [
   { amount: 0, currency: "CNY" },
   { amount: 0, currency: "CNY" },
   { amount: 0, currency: "CNY" },
@@ -37,20 +37,24 @@ const defaultRows = [
 const AddAmountModal = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
-  const [rows, setRows] = useState(defaultRows);
+  const [rows, setRows] =
+    useState<{ amount: number; currency: "CNY" | "USD" }[]>(defaultRows);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Generic handler for amount and currency change
   const updateRow = useCallback(
-    (index: number, key: "amount" | "currency", value: any) => {
+    (index: number, key: keyof (typeof defaultRows)[0], value: any) => {
       setRows((prevRows) => {
         const updated = [...prevRows];
-        updated[index][key] =
-          key === "amount"
-            ? value && !isNaN(parseInt(value))
-              ? parseInt(value)
-              : 0
-            : value;
+        updated[index] = {
+          ...updated[index],
+          [key]:
+            key === "amount"
+              ? value && !isNaN(parseInt(value))
+                ? parseInt(value)
+                : 0
+              : value,
+        };
         return updated;
       });
     },
