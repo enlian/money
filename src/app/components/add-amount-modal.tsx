@@ -201,7 +201,7 @@ const AddAmountModal = ({
               <div className="flex justify-between items-center mt-2">
                 <span className="text-white">
                   合计（人民币）￥
-                  <span className="text-xl">{getTotalInCNY()}</span>
+                  <span className="text-xl">{getTotalInCNY().toFixed(0)}</span>
                 </span>
 
                 <button
