@@ -21,7 +21,7 @@ const amountSchema = z.array(
     amount: z
       .number()
       .min(1, { message: "金额必须大于0" }) // 保证金额大于0
-      .max(100000, { message: "金额不能超过10万" }),
+      .max(10000000, { message: "金额不能超过1000万" }),
     currency: z.enum(["CNY", "USD"]),
   })
 );
