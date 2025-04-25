@@ -40,9 +40,8 @@
 ---
 
 ## **项目截图**
-
-<img src="./screenshot/1.png" width="300"/>
-<img src="./screenshot/2.png" width="300"/>
+<img src="https://github.com/user-attachments/assets/d22d7a81-ebe5-4b97-b6c2-7037058f7ea2" width="300"/>
+<img src="https://github.com/user-attachments/assets/b02a9350-1771-4f89-b5ab-374e6c2876fe" width="300"/>
 
 ---
 
