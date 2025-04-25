@@ -56,7 +56,7 @@ const LoginModal = () => {
           {pathname !== "/history" && (
             <Button onClick={() => router.push("/history")}>历史</Button>
           )}
-          <Button className="bg-gray-400" onClick={handleLogout}>
+          <Button className="bg-gray-600" onClick={handleLogout}>
             退出
           </Button>
         </div>

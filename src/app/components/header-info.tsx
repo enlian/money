@@ -46,8 +46,8 @@ const HeaderInfo = React.memo(({ data, rate }: Props) => {
   const maxWan = maxAmount ? (maxAmount / 10000).toFixed(2) : null;
 
   return (
-    <div className="p-4 bg-white shadow-sm rounded-lg">
-      <p className="text-gray-700 text-sm">
+    <div className="p-4 bg-gray-800 shadow-sm rounded-lg">
+      <p className="text-gray-300 text-sm">
         {latestFormattedDate} {latestWan && <b>{latestWan}万</b>}{" "}
         {latestUsdWan && ` / ${latestUsdWan}万 (美元${rate})`}{" "}
         {maxWan && ` / 最高 ${maxWan}万(`}

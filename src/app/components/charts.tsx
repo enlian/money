@@ -168,43 +168,6 @@ export default function Charts({ data }: ChartProps) {
     }
   };
 
-  const barChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: "投资回报率对比",
-      },
-      tooltip: {
-        callbacks: {
-          label: function (tooltipItem: TooltipItem<"bar">) {
-            const value = tooltipItem.raw as number;
-            return `${tooltipItem.dataset.label}: ${value.toFixed(2)}%`;
-          },
-        },
-      },
-    },
-    scales: {
-      y: {
-        ticks: {
-          callback: (value: number | string) =>
-            typeof value === "number" ? `${value}%` : value,
-        },
-        title: {
-          display: true,
-          text: "回报率 (%)",
-        },
-      },
-      x: {
-        title: {
-          display: true,
-          text: "时间范围",
-        },
-      },
-    },
-  };
-
   const assetsChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -216,6 +179,7 @@ export default function Charts({ data }: ChartProps) {
       title: {
         display: true,
         text: "总资产走势图",
+        color: "white",
       },
       tooltip: {
         mode: "index" as const,
@@ -256,12 +220,62 @@ export default function Charts({ data }: ChartProps) {
         },
         ticks: {
           maxTicksLimit: 30,
+          color: "white", // x轴文字颜色
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)", // x轴网格线颜色
         },
       },
       y: {
         ticks: {
           callback: (value: string | number) =>
             typeof value === "number" ? value / 10000 + "万" : value,
+          color: "white", // y轴文字颜色
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)", // y轴网格线颜色
+        },
+      },
+    },
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: "投资回报率对比",
+        color: "white",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem: TooltipItem<"bar">) {
+            const value = tooltipItem.raw as number;
+            return `${tooltipItem.dataset.label}: ${value.toFixed(2)}%`;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          callback: (value: number | string) =>
+            typeof value === "number" ? `${value}%` : value,
+          color: "white", // y轴文字颜色
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)", // y轴网格线颜色
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "时间范围",
+          color: "white", // x轴标题文字颜色
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)", // x轴网格线颜色
         },
       },
     },

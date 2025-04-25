@@ -70,7 +70,7 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-6 bg-white h-full">
+    <div className="flex flex-col gap-4 p-6 h-full">
       <div className="flex justify-end gap-3">
         <Button onClick={() => router.push("/")}>首页</Button>
 
@@ -78,9 +78,9 @@ const Page = () => {
         <LoginModal />
       </div>
 
-      <div className="overflow-x-auto rounded border">
+      <div className="overflow-x-auto rounded border border-gray-700 bg-gray-800 text-gray-200">
         <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-100 border-b font-semibold">
+          <thead className="border-b border-gray-700 font-semibold">
             <tr>
               <th className="px-4 py-2">日期</th>
               <th className="px-4 py-2">纳斯达克</th>
@@ -91,7 +91,10 @@ const Page = () => {
           </thead>
           <tbody>
             {data.map((row) => (
-              <tr key={row.date} className="border-b hover:bg-gray-50">
+              <tr
+                key={row.date}
+                className="border-b border-gray-700 hover:bg-gray-700"
+              >
                 <td className="px-4 py-2">{row.date}</td>
                 <td className="px-4 py-2">{row.纳斯达克?.toFixed(2) ?? "-"}</td>
                 <td className="px-4 py-2">{row.标普500?.toFixed(2) ?? "-"}</td>

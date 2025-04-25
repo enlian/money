@@ -30,7 +30,6 @@
 - **React.js**：用于构建用户界面。
 - **TypeScript**：增强代码可读性，提高开发效率。
 - **Tailwind CSS**：快速开发响应式 UI 组件。
-- **Material-UI**：实现 Material Design 风格的 UI 组件库。
 - **Chart.js**：用于绘制资产走势的可视化图表。
 - **PostgreSQL**：强大的开源关系型数据库，存储用户资产数据。
 - **NextAuth**：用于用户身份验证与安全管理。

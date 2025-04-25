@@ -14,11 +14,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <div className="md:w-[1024px] mx-auto  h-screen">
+    <html lang="en" className="dark">
+      <body className="bg-gray-900 text-white">
+        <div className="md:w-[1024px] mx-auto h-screen">
           <QueryProvider>
-            <SessionProvider> {children}</SessionProvider>
+            <SessionProvider>{children}</SessionProvider>
           </QueryProvider>
           <Toaster richColors position="top-center" />
         </div>

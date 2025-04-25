@@ -22,10 +22,6 @@ const COLORS = [
   "#8549ba",
 ];
 
-export function color(index: number): string {
-  return COLORS[index % COLORS.length];
-}
-
 export const CHART_COLORS = {
   red: "rgb(255, 99, 132)",
   orange: "rgb(255, 159, 64)",
@@ -35,6 +31,10 @@ export const CHART_COLORS = {
   purple: "rgb(153, 102, 255)",
   grey: "rgb(201, 203, 207)",
 };
+
+export function color(index: number): string {
+  return COLORS[index % COLORS.length];
+}
 
 // 计算平均年化收益率（Compound Annual Growth Rate）
 export const getAnnualizedReturnRate = (data: AssetData[]) => {
