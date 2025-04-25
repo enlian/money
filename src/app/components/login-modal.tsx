@@ -50,20 +50,33 @@ const LoginModal = () => {
   return (
     <>
       {!session ? (
-        <Button onClick={() => setIsOpen(true)}>登录</Button>
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="bg-blue-600 text-white hover:bg-blue-700"
+        >
+          登录
+        </Button>
       ) : (
         <div className="flex gap-3">
           {pathname !== "/history" && (
-            <Button onClick={() => router.push("/history")}>历史</Button>
+            <Button
+              onClick={() => router.push("/history")}
+              className="bg-gray-700 text-white hover:bg-gray-800"
+            >
+              历史
+            </Button>
           )}
-          <Button className="bg-gray-600" onClick={handleLogout}>
+          <Button
+            className="bg-gray-600 text-white hover:bg-gray-700"
+            onClick={handleLogout}
+          >
             退出
           </Button>
         </div>
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-[300px]">
+        <DialogContent className="w-[300px] bg-gray-800 text-white">
           <DialogHeader>
             <DialogTitle>登录</DialogTitle>
           </DialogHeader>
@@ -77,7 +90,7 @@ const LoginModal = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium mb-2"
+                className="block text-sm font-medium mb-2 text-white"
               >
                 用户名
               </label>
@@ -87,13 +100,13 @@ const LoginModal = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md bg-gray-700 text-white"
               />
             </div>
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium mb-2"
+                className="block text-sm font-medium mb-2 text-white"
               >
                 密码
               </label>
@@ -103,7 +116,7 @@ const LoginModal = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md bg-gray-700 text-white"
               />
             </div>
             {loginMutation.isError && (
@@ -113,7 +126,7 @@ const LoginModal = () => {
             )}
             <DialogFooter>
               <Button
-                className="text-white"
+                className="bg-blue-600 text-white hover:bg-blue-700"
                 type="submit"
                 disabled={loginMutation.isPending}
               >
