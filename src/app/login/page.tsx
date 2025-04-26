@@ -23,26 +23,31 @@ export default function LoginPage() {
   };
 
   return (
-    <form
-      onSubmit={handleLogin}
-      className="flex flex-col gap-4 max-w-sm mx-auto mt-10"
-    >
-      <input
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="User"
-        className="p-2 border border-gray-300 rounded"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        className="p-2 border border-gray-300 rounded"
-      />
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-        登录
-      </button>
-    </form>
+    <div className="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+      <form
+        onSubmit={handleLogin}
+        className="flex flex-col gap-4 max-w-sm mx-auto mt-10 p-6 bg-gray-800 rounded-lg"
+      >
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="User"
+          className="p-2 border border-gray-600 rounded bg-gray-700 text-white"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          className="p-2 border border-gray-600 rounded bg-gray-700 text-white"
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        >
+          登录
+        </button>
+      </form>
+    </div>
   );
 }

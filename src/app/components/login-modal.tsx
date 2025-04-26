@@ -50,12 +50,7 @@ const LoginModal = () => {
   return (
     <>
       {!session ? (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="bg-blue-600 text-white hover:bg-blue-700"
-        >
-          登录
-        </Button>
+        <Button onClick={() => setIsOpen(true)}>登录</Button>
       ) : (
         <div className="flex gap-3">
           {pathname !== "/history" && (
@@ -118,7 +113,7 @@ const LoginModal = () => {
             )}
             <DialogFooter>
               <Button
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="w-full p-5 mt-3"
                 type="submit"
                 disabled={loginMutation.isPending}
               >
