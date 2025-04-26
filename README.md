@@ -40,8 +40,10 @@
 ---
 
 ## **项目截图**
-<img src="https://github.com/user-attachments/assets/d22d7a81-ebe5-4b97-b6c2-7037058f7ea2" width="300"/>
-<img src="https://github.com/user-attachments/assets/b02a9350-1771-4f89-b5ab-374e6c2876fe" width="300"/>
+![image](https://github.com/user-attachments/assets/f1c51342-948a-4def-a746-64326ab88ee8)
+
+![image](https://github.com/user-attachments/assets/a601fa74-212d-4fc7-aab5-00a0e2a846f3)
+
 
 ---
 
