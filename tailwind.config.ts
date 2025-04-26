@@ -14,7 +14,7 @@ const config: Config = {
         border: "hsl(214, 32%, 30%)", // 边框颜色
         background: "hsl(220, 20%, 15%)", // 背景颜色
         foreground: "hsl(222, 47%, 90%)", // 文字颜色
-        primary: "#2563eb", // 主要按钮颜色
+        primary: "#132f6e", // 主要按钮颜色
         secondary: "#0035a9", // 次要按钮颜色
         accent: "hsl(174, 70%, 45%)", // 高亮颜色
         destructive: "hsl(348, 100%, 61%)", // 销毁按钮颜色

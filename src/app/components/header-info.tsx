@@ -5,7 +5,7 @@ import { getAmounts, getAnnualizedReturnRate } from "../lib/utils";
 
 interface Props {
   data: AllData | null;
-  rate: number;
+  rate: { usd: number; gbp: number };
 }
 
 /**
@@ -42,14 +42,16 @@ const HeaderInfo = React.memo(({ data, rate }: Props) => {
 
   const latestWan = latestAmount ? (latestAmount / 10000).toFixed(2) : null;
   const latestUsdWan =
-    latestAmount && rate ? (latestAmount / rate / 10000).toFixed(2) : null;
+    latestAmount && rate?.usd
+      ? (latestAmount / rate.usd / 10000).toFixed(2)
+      : null;
   const maxWan = maxAmount ? (maxAmount / 10000).toFixed(2) : null;
 
   return (
     <div className="p-4 bg-gray-800 shadow-sm rounded-lg">
       <p className="text-gray-300 text-sm">
         {latestFormattedDate} {latestWan && <b>{latestWan}万</b>}{" "}
-        {latestUsdWan && ` / ${latestUsdWan}万 (美元${rate})`}{" "}
+        {latestUsdWan && ` / ${latestUsdWan}万 (美元${rate.usd})`}{" "}
         {maxWan && ` / 最高 ${maxWan}万(`}
         {drawdown != null && <b>-{drawdown}</b>}
         {maxWan && ") "}/ 年化 <b>{annualized}</b>

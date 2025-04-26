@@ -3,7 +3,7 @@ export interface AllData {
   SPY: AssetData[];
   QQQ: AssetData[];
   btc: AssetData[];
-  exchangeRate: number | 7.25;
+  exchangeRate: { usd: number | 7.29; gbp: number | 8.8 };
 }
 
 export interface Dataset {

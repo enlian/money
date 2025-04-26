@@ -193,6 +193,11 @@ export default function Charts({ data }: ChartProps) {
           },
         },
       },
+      legend: {
+        labels: {
+          color: "white",
+        },
+      },
       zoom: {
         pan: {
           enabled: true,
@@ -256,6 +261,11 @@ export default function Charts({ data }: ChartProps) {
           },
         },
       },
+      legend: {
+        labels: {
+          color: "white",
+        },
+      },
     },
     scales: {
       y: {
@@ -273,6 +283,9 @@ export default function Charts({ data }: ChartProps) {
           display: true,
           text: "时间范围",
           color: "white", // x轴标题文字颜色
+        },
+        ticks: {
+          color: "white",
         },
         grid: {
           color: "rgba(255, 255, 255, 0.1)", // x轴网格线颜色

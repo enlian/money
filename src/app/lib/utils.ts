@@ -64,14 +64,17 @@ export const getAnnualizedReturnRate = (data: AssetData[]) => {
 
 // 获取外部API的汇率数据
 export const getExchangeRate = async () => {
-  //const url = `https://data.fixer.io/api/latest?access_key=${EXCHANGE_RATE_API_KEY}`;
-  const url = `https://wise.com/rates/live?source=USD&target=CNY`;
-  const response = await fetch(url);
-  const data = await response.json();
-  // 计算 USD/CNY 汇率
-  // const usdToCny = data.rates.CNY / data.rates.USD;
+  const usdUrl = "https://wise.com/rates/live?source=USD&target=CNY";
+  const gbpUrl = "https://wise.com/rates/live?source=GBP&target=CNY";
 
-  return data.value.toFixed(2);
+  const [usdRes, gbpRes] = await Promise.all([fetch(usdUrl), fetch(gbpUrl)]);
+
+  const [usdData, gbpData] = await Promise.all([usdRes.json(), gbpRes.json()]);
+
+  return {
+    usd: parseFloat(usdData.value.toFixed(2)),
+    gbp: parseFloat(gbpData.value.toFixed(2)),
+  };
 };
 
 export function cn(...inputs: ClassValue[]) {

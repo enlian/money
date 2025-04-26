@@ -59,17 +59,9 @@ const LoginModal = () => {
       ) : (
         <div className="flex gap-3">
           {pathname !== "/history" && (
-            <Button
-              onClick={() => router.push("/history")}
-              className="bg-gray-700 text-white hover:bg-gray-800"
-            >
-              历史
-            </Button>
+            <Button onClick={() => router.push("/history")}>历史</Button>
           )}
-          <Button
-            className="bg-gray-600 text-white hover:bg-gray-700"
-            onClick={handleLogout}
-          >
+          <Button className="bg-gray-700" onClick={handleLogout}>
             退出
           </Button>
         </div>
