@@ -6,6 +6,14 @@
 
 ---
 
+## **项目截图**
+![image](https://github.com/user-attachments/assets/f1c51342-948a-4def-a746-64326ab88ee8)
+
+![image](https://github.com/user-attachments/assets/a601fa74-212d-4fc7-aab5-00a0e2a846f3)
+
+
+---
+
 ## **功能特点**
 
 - **个人资产的添加、更新与追踪**：用户可以记录特定时间的资产数据，并随时更新。
@@ -36,14 +44,6 @@
 - **React Query**：高效的数据获取和状态管理方案，优化 API 请求。
 - **Zod**：数据验证库，确保输入数据格式正确。
 - **Vercel**：用于前端托管和部署 Next.js 应用。
-
----
-
-## **项目截图**
-![image](https://github.com/user-attachments/assets/f1c51342-948a-4def-a746-64326ab88ee8)
-
-![image](https://github.com/user-attachments/assets/a601fa74-212d-4fc7-aab5-00a0e2a846f3)
-
 
 ---
 
