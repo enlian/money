@@ -8,7 +8,7 @@
 
 ## **项目截图**
 
-![image](https://github.com/user-attachments/assets/9dde7411-cf49-4e52-8ad4-06df63f46e30)
+![image](https://github.com/user-attachments/assets/715ddc18-4e0e-40a2-96d6-543b09ada471)
 
 ![image](https://github.com/user-attachments/assets/a601fa74-212d-4fc7-aab5-00a0e2a846f3)
 
